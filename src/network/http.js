@@ -30,7 +30,8 @@ const URLS = {
         LOGIN : 'super_admin/login'
     },
     COMPANY : {
-        LSIT_ALL : 'company/list/all'
+        LSIT_ALL : 'company/list/all',
+        CREATE : 'company/create'
     }
 }
 

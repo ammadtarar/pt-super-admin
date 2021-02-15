@@ -6,7 +6,7 @@
 
     <div class="login-panel">
       <form action="">
-        <h1 class="display-4 font-weight-bold ">Login</h1>
+        <h1 class="display-4 font-weight-bold">Login</h1>
         <p class="font-weight-bold ">Super Admin</p>
 
         <br />
@@ -91,8 +91,6 @@ export default {
           }, 2000);
         })
         .catch(function(error) {
-          console.log(" === ERROR ===");
-          console.log(error);
           localStorage.removeItem("email");
           localStorage.removeItem("token");
           localStorage.removeItem("id");
