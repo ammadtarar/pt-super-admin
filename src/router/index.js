@@ -62,15 +62,14 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if(to.matched.some(record => record.meta.requiresAuth)) {
-    next()
-      // if (localStorage.getItem('token') == null) {
-      //     next({
-      //         path: '/',
-      //         params: { nextUrl: to.fullPath }
-      //     })
-      // } else {
-      //   next()
-      // }
+      if (localStorage.getItem('token') == null || localStorage.getItem('token') == undefined || localStorage.getItem('token') == '') {
+          next({
+              path: '/',
+              params: { nextUrl: to.fullPath }
+          });
+      } else {
+        next()
+      }
   } else {
       next()
   }
