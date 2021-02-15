@@ -31,7 +31,9 @@ const URLS = {
     },
     COMPANY : {
         LSIT_ALL : 'company/list/all',
-        CREATE : 'company/create'
+        CREATE : 'company/create',
+        UPDATE : 'company/:id/update',
+        BY_ID : 'company/:id'
     }
 }
 

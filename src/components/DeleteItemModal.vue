@@ -2,16 +2,7 @@
   <div class="modal-mask">
     <div class="card">
       <label class="title">{{ title }}</label>
-      <form class="form">
-        <div class="form-group" v-bind:key="field.key" v-for="field in fields">
-          <label for="email" class="ionput-label ">{{ field.title }}</label>
-          <input
-            class="form-control"
-            :placeholder="field.placeholder || field.title"
-            v-model="field.value"
-          />
-        </div>
-      </form>
+      <label class="description" v-html="description"></label>
       <div class="actions">
         <button
           class="btn btn-outline-primary w-100 font-weight-bold"
@@ -19,8 +10,8 @@
         >
           Cancel
         </button>
-        <button class="btn btn-primary w-100 font-weight-bold" @click="save">
-          Save
+        <button class="btn btn-danger w-100 font-weight-bold" @click="save">
+          Delete
         </button>
       </div>
     </div>
@@ -32,7 +23,7 @@ import { HTTP } from "../network/http";
 let NotificationsController = require("../components/NotificationsController");
 
 export default {
-  name: "SingleItemCreationComponent",
+  name: "DeleteItemModel",
   props: ["schemtics"],
   data() {
     return {
@@ -40,46 +31,17 @@ export default {
     };
   },
   methods: {
-    clear() {
-      console.log("clearing...");
-      console.log("this.title = ", this.title);
-
-      this.title = "";
-      console.log("this.title = ", this.title);
-      console.log("this.fields = ", this.fields);
-      this.fields = [];
-      console.log("this.fields = ", this.fields);
-      this.endpoint = "";
-    },
     save() {
-      var missingField = false;
-      var body = {};
-      this.fields.forEach((element) => {
-        if (!element.value) {
-          this.$toast.warning(`${element.title} is missing`);
-          missingField = true;
-          return;
-        } else {
-          body[element.key] = element.value;
-          element.value = "";
-        }
-      });
-
-      if (missingField) {
-        return;
-      }
       NotificationsController.showActivityIndicator();
       HTTP({
-        method: this.method,
-        url: this.endpoint,
-        data: body,
+        method: 'delete',
+        url: this.endpoint
       })
         // HTTP.post(this.endpoint , body)
         .then((response) => {
           this.$toast.success(response.data.message);
           NotificationsController.hideActivityIndicator();
           this.$emit("success", response.data);
-          this.clear();
         })
         .catch((err) => {
           var msg = "";
@@ -95,35 +57,18 @@ export default {
     },
     cancel() {
       this.$emit("cancel");
-      this.clear();
     },
   },
   created() {
     console.log("Component created");
-    this.clear();
     let schema = this.$props.schemtics;
     console.log(schema);
     if (schema === null || schema === undefined) {
       throw new Error(
-        "Single item creation component's schemetics is missing in props"
+        "Delete item component's schemetics is missing in props"
       );
     }
 
-    if (schema.method === null || schema.method === undefined) {
-      throw new Error(
-        "Single item creation component's schemetics missing the method variable"
-      );
-    } else {
-      this.method = schema.method;
-    }
-
-    if (schema.fields === null || schema.fields === undefined) {
-      throw new Error(
-        "Single item creation component's schemetics missing the fields array"
-      );
-    } else {
-      this.fields = schema.fields;
-    }
 
     if (schema.endpoint === null || schema.endpoint === undefined) {
       throw new Error(
@@ -133,10 +78,22 @@ export default {
       this.endpoint = schema.endpoint;
     }
 
-    if (schema.title) {
+    if (schema.title === null || schema.title === undefined) {
+      throw new Error(
+        "Single item creation component's schemetics missing the title variable"
+      );
+    } else {
       this.title = schema.title;
     }
-    console.log(this.$props.schemtics.title);
+
+    if (schema.description === null || schema.description === undefined) {
+      throw new Error(
+        "Single item creation component's schemetics missing the description variable"
+      );
+    } else {
+      this.description = schema.description;
+    }
+    
   },
   mounted() {},
 };
@@ -168,6 +125,13 @@ export default {
       width: 100%;
       line-height: 50px;
       font-size: 20px;
+      color: black;
+    }
+
+    .description {
+      width: 100%;
+      font-size: 16px;
+      text-align: left;
       color: black;
     }
 
