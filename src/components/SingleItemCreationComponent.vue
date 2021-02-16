@@ -3,13 +3,33 @@
     <div class="card">
       <label class="title">{{ title }}</label>
       <form class="form">
-        <div class="form-group" v-bind:key="field.key" v-for="field in fields">
-          <label for="email" class="ionput-label ">{{ field.title }}</label>
-          <input
-            class="form-control"
-            :placeholder="field.placeholder || field.title"
-            v-model="field.value"
-          />
+        <div v-bind:key="field.key" v-for="field in fields">
+          <div class="form-group" v-if="!field.type">
+            <label class="ionput-label ">{{ field.title }}</label>
+            <input
+              class="form-control"
+              :placeholder="field.placeholder || field.title"
+              v-model="field.value"
+            />
+          </div>
+
+          <div
+            class="form-group"
+            style="display : flex; flex-direction : column"
+            v-if="field.type && field.type === 'single-option'"
+          >
+            <label class="ionput-label ">{{ field.title }}</label>
+            <select v-model="field.value">
+              <option disabled value="null">Select one type</option>
+              <option
+                v-for="item in field.options"
+                v-bind:value="item"
+                v-bind:key="item"
+              >
+                {{ item.replace("_", " ").toUpperCase() }}
+              </option>
+            </select>
+          </div>
         </div>
       </form>
       <div class="actions">
@@ -53,7 +73,7 @@ export default {
     },
     save() {
       var missingField = false;
-      var body = {};
+      var body = this.body || {};
       this.fields.forEach((element) => {
         if (!element.value) {
           this.$toast.warning(`${element.title} is missing`);
@@ -133,6 +153,13 @@ export default {
       this.endpoint = schema.endpoint;
     }
 
+    // if(schema.type && schema.type === 'single-option'){
+
+    // }
+
+    if(schema.body){
+      this.body = schema.body;
+    }
     if (schema.title) {
       this.title = schema.title;
     }

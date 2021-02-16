@@ -55,6 +55,10 @@ const URLS = {
     LIST_ALL: "company/user/list/all",
     UPDATE_STATUS : "company/user/:id/update/status"
   },
+  JOBS : {
+    CREATE : "company/job/create",
+    LIST_ALL : "company/job/list/all"
+  }
 };
 
 export { HTTP, URLS };

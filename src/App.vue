@@ -1,14 +1,14 @@
 <template>
-  <router-view/>
-  <transition >
-      <div class="modal-mask" id="loadingDiv" style=" visibility : hidden">
-        <div class="modal-wrapper">
-          <div class="loading-card" >
-            <div class="loader"></div>
-          </div>
+  <router-view />
+  <transition>
+    <div class="modal-mask" id="loadingDiv" style=" visibility : hidden">
+      <div class="modal-wrapper">
+        <div class="loading-card">
+          <div class="loader"></div>
         </div>
       </div>
-    </transition>
+    </div>
+  </transition>
 </template>
 
 <style lang="scss">
@@ -17,7 +17,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  
   height: 100vh;
 }
 
@@ -28,9 +27,17 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, .5);
+  background-color: rgba(0, 0, 0, 0.5);
   display: table;
-  transition: opacity .3s ease;
+  transition: opacity 0.3s ease;
+}
+
+select {
+  padding: 0.35rem;
+  width: 100%;
+  vertical-align: top;
+  border: 1px solid #dee2e6;
+  color: #495057;
 }
 
 .modal-wrapper {
@@ -49,23 +56,23 @@
 
   background-color: #fff;
   border-radius: 4px;
-	overflow: hidden;
+  overflow: hidden;
   box-shadow: 1px 1px 10px 1px #212121;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   font-family: Helvetica, Arial, sans-serif;
-	/* overflow: hidden; */
+  /* overflow: hidden; */
 }
 
 .loader {
   width: 50px;
   height: 50px;
-    animation: spin 1s linear infinite;
-    -webkit-animation: spin 1s linear infinite;
-    margin: auto;
-    border-radius: 50%;
-    background: transparent;
-    border: 5px solid #fff;
-    border-top: 5px solid #3490dc;
+  animation: spin 1s linear infinite;
+  -webkit-animation: spin 1s linear infinite;
+  margin: auto;
+  border-radius: 50%;
+  background: transparent;
+  border: 5px solid #fff;
+  border-top: 5px solid #3490dc;
 }
 
 @-webkit-keyframes spin {
@@ -83,5 +90,4 @@
     transform: rotate(360deg);
   }
 }
-
 </style>

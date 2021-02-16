@@ -61,7 +61,7 @@
                     v-bind:value="item"
                     v-bind:key="item"
                   >
-                    {{ item.replace('_' , ' ').toUpperCase() }}
+                    {{ item.replace("_", " ").toUpperCase() }}
                   </option>
                 </select>
               </td>
@@ -155,9 +155,9 @@ export default {
       console.log(JSON.parse(JSON.stringify(this.users)));
       //   return;
       NotificationsController.showActivityIndicator();
-      
+
       HTTP.post(URLS.USER.CREATE, {
-          users_list : this.users
+        users_list: this.users,
       })
         .then((response) => {
           NotificationsController.hideActivityIndicator();
@@ -237,14 +237,6 @@ export default {
       overflow-y: scroll;
       display: flex;
       flex-direction: column;
-
-      select {
-        padding: 0.35rem;
-        width: 100%;
-        vertical-align: top;
-        border: 1px solid #dee2e6;
-        color: #495057;
-      }
     }
 
     .form {

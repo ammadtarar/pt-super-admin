@@ -2,125 +2,144 @@
   <div class="page-container">
     <nav-bar></nav-bar>
     <div class="page">
-       <div class="container-fluid">
-      <div class="card">
-        <div class="card-body">
+      <div class="container-fluid">
+        <div class="card">
+          <div class="card-body">
+            <div class="title-coontainer">
+              <h5 class="card-title">Companies ({{ count }})</h5>
+              <pager :limit="limit" @onPageChanged="onPageChanged"></pager>
+            </div>
 
-          <div class="title-coontainer">
-            <h5 class="card-title">Companies ({{count}})</h5>
-            <pager :limit="limit" @onPageChanged="onPageChanged"></pager>
-          </div>
-          
-
-          <div class="filters-container">
-            <div class="input-group" style="margin-right : 10px">
-              <div class="input-group-text" id="btnGroupAddon">
-                Search By Title
+            <div class="filters-container">
+              <div class="input-group" style="margin-right : 10px">
+                <div class="input-group-text" id="btnGroupAddon">
+                  Search By Title
+                </div>
+                <input
+                  type="search"
+                  class="form-control"
+                  placeholder="Enter a keyword here"
+                  v-model="keyword"
+                  @input="onUpdateKeyword"
+                />
               </div>
-              <input
-                type="search"
-                class="form-control"
-                placeholder="Enter a keyword here"
-                v-model="keyword"
-                @input="onUpdateKeyword"
-              />
+
+              <div class="actions">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  @click="search"
+                >
+                  Search
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  @click="onClickAddNewCompany"
+                >
+                  Add New
+                </button>
+              </div>
             </div>
 
-            <div class="actions">
-              <button
-                type="button"
-                class="btn btn-outline-primary"
-                @click="search"
-              >
-                Search
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                @click="onClickAddNewCompany"
-              >
-                Add New
-              </button>
-            </div>
+            <table
+              class="table table-striped"
+              style="height : 300px !important"
+            >
+              <thead>
+                <tr>
+                  <th style="width : 5%" scope="col">ID</th>
+                  <th style="width : 45%" scope="col">Title</th>
+                  <th style="width : 20%" scope="col">Creation Date</th>
+                  <th style="width : 30%" scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-bind:key="company.id" v-for="company in companies">
+                  <th scope="row">{{ company.id }}</th>
+                  <td>{{ company.name }}</td>
+                  <td>
+                    {{
+                      moment(company.createdAt).format("MMM D YYYY, h:mm:ss a")
+                    }}
+                  </td>
+                  <td>
+                    <div class="btn-group" role="group">
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary"
+                        @click="onClickCompanyDetail(company)"
+                      >
+                        Details
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary"
+                        @click="onClickUpdateCompany(company)"
+                      >
+                        Update
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-success"
+                        @click="onClickAddCompanyUsers(company)"
+                      >
+                        Add Users
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline-success"
+                        @click="onClickAddNewJob(company)"
+                      >
+                        Add Job
+                      </button>
+
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger"
+                        @click="onClickDeleteCompany(company)"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-
-          <table class="table table-striped" style="height : 300px !important">
-            <thead>
-              <tr>
-                <th style="width : 5%" scope="col">ID</th>
-                <th style="width : 45%" scope="col">Title</th>
-                <th style="width : 20%" scope="col">Creation Date</th>
-                <th style="width : 30%" scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-bind:key="company.id" v-for="company in companies">
-                <th scope="row">{{ company.id }}</th>
-                <td>{{ company.name }}</td>
-                <td>
-                  {{
-                    moment(company.createdAt).format("MMM D YYYY, h:mm:ss a")
-                  }}
-                </td>
-                <td>
-                  <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-primary" @click="onClickCompanyDetail(company)">
-                      Details
-                    </button>
-                    <button type="button" class="btn btn-outline-primary" @click="onClickAddCompanyUsers(company)">
-                      Add Users
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-outline-primary"
-                      @click="onClickUpdateCompany(company)"
-                    >
-                      Update
-                    </button>
-                    <button type="button" class="btn btn-outline-danger" @click="onClickDeleteCompany(company)">
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
         </div>
       </div>
-    </div>
 
-    <single-item-creation-component
-      v-if="showCompanyCreationComponent"
-      :schemtics="companyCreationComponentSchmetics"
-      @success="companyCreationSuccess"
-      @fail="companynCreationFailed"
-      @cancel="companyCreationCancelled"
-    ></single-item-creation-component>
+      <single-item-creation-component
+        v-if="showCompanyCreationComponent"
+        :schemtics="creationSchemetics"
+        @success="companyCreationSuccess"
+        @fail="companynCreationFailed"
+        @cancel="companyCreationCancelled"
+      ></single-item-creation-component>
 
-  <delete-item-modal 
-    :schemtics="companyDeleteSchemetics" 
-    v-if="showDeleteCompanyModal"
-    @success="onCompanyDeleteSuccess"
-    @cancel="onCompanyDeleteCancelled"
-    ></delete-item-modal>
+      <delete-item-modal
+        :schemtics="companyDeleteSchemetics"
+        v-if="showDeleteCompanyModal"
+        @success="onCompanyDeleteSuccess"
+        @cancel="onCompanyDeleteCancelled"
+      ></delete-item-modal>
 
-    <add-company-users-component
-      :model="newUsersCompany"
-      v-if="showAddCompanyComponent"
-      @success="companyAddUsersSuccess"
-      @cancel="companyAddUsersCancelled"
-    >
-    </add-company-users-component>
+      <add-company-users-component
+        :model="newUsersCompany"
+        v-if="showAddCompanyComponent"
+        @success="companyAddUsersSuccess"
+        @cancel="companyAddUsersCancelled"
+      >
+      </add-company-users-component>
 
-    <company-detail-component
-      v-if="showCompanyDetail"
-      @hide="showCompanyDetail = false"
-      :model="companyDetailModel"
-    ></company-detail-component>
+      <company-detail-component
+        v-if="showCompanyDetail"
+        @hide="showCompanyDetail = false"
+        :model="companyDetailModel"
+      ></company-detail-component>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -141,61 +160,103 @@ export default {
     SingleItemCreationComponent,
     DeleteItemModal,
     AddCompanyUsersComponent,
-    CompanyDetailComponent
+    CompanyDetailComponent,
   },
   data() {
     return {
       keyword: "",
       resultsPerPage: 10,
-      count : 0,
+      count: 0,
       page: 1,
       limit: 0,
       companies: [],
       showCompanyCreationComponent: false,
       companyCreationComponentSchmetics: {},
-      companyDeleteSchemetics : {},
-      showDeleteCompanyModal : false,
-      showAddCompanyComponent : false,
-      newUsersCompany : {},
-      showCompanyDetail : false,
-      companyDetailModel : {}
+      companyDeleteSchemetics: {},
+      showDeleteCompanyModal: false,
+      showAddCompanyComponent: false,
+      newUsersCompany: {},
+      showCompanyDetail: false,
+      companyDetailModel: {},
+      creationSchemetics : {}
     };
   },
   methods: {
-    onClickCompanyDetail(company){
+    onClickAddNewJob(company) {
+      console.log("onClickAddNewJob");
+      this.creationSchemetics = {
+        title: "Create New Job",
+        method: "post",
+        endpoint: URLS.JOBS.CREATE,
+        fields: [
+          {
+            key: "title",
+            title: "Title",
+            placeholder: "Enter job title here",
+          },
+          {
+            key: "location",
+            title: "Location",
+            placeholder: "Enter job location here",
+          },
+          {
+            key: "url",
+            title: "URL",
+            placeholder: "Enter job url here",
+          },
+          {
+            key: "referral_success_reward_type",
+            title: "Referral Reward Type",
+            placeholder: "Enter job reward points here",
+            type: "single-option",
+            options: ["points", "cash"],
+          },
+          {
+            key: "referral_success_reward_value",
+            title: "Referral Reward Value",
+            placeholder: "Enter job reward points here",
+          },
+        ],
+        body : {
+          companyId : company.id
+        }
+      };
+      this.showCompanyCreationComponent = true;
+    },
+    onClickCompanyDetail(company) {
       this.companyDetailModel = company;
       this.showCompanyDetail = true;
     },
-    onClickAddCompanyUsers(company){
+    onClickAddCompanyUsers(company) {
       this.newUsersCompany = company;
       this.showAddCompanyComponent = true;
     },
-    companyAddUsersSuccess(){
+    companyAddUsersSuccess() {
       this.showAddCompanyComponent = false;
       this.newUsersCompany = {};
       this.getCompanies();
     },
-    companyAddUsersCancelled(){
+    companyAddUsersCancelled() {
       this.showAddCompanyComponent = false;
       this.newUsersCompany = false;
     },
-    onCompanyDeleteCancelled(){
+    onCompanyDeleteCancelled() {
       this.showDeleteCompanyModal = false;
       this.companyDeleteSchemetics = {};
     },
-    onCompanyDeleteSuccess(){
+    onCompanyDeleteSuccess() {
       this.showDeleteCompanyModal = false;
       this.companyDeleteSchemetics = {};
       this.getCompanies();
     },
-    onClickDeleteCompany(company){
+    onClickDeleteCompany(company) {
       let url = URLS.COMPANY.BY_ID.replace(":id", company.id);
       this.companyDeleteSchemetics = {
-        endpoint : url,
-        title : 'Delete Company',
-        description : `Are you sure you want to delete <b> ${company.name} </b> from the companies list ?`
+        endpoint: url,
+        title: "Delete Company",
+        description: `Are you sure you want to delete <b> ${company.name} </b> from the companies list ?`,
       };
-      this.showDeleteCompanyModal = true
+      this.showDeleteCompanyModal = true;
     },
     onClickUpdateCompany(company) {
       let url = URLS.COMPANY.UPDATE.replace(":id", company.id);
@@ -217,7 +278,7 @@ export default {
       this.showCompanyCreationComponent = true;
     },
     onClickAddNewCompany() {
-      this.companyCreationComponentSchmetics = {
+      this.creationSchemetics = {
         title: "Create New Company",
         method: "post",
         endpoint: URLS.COMPANY.CREATE,
@@ -308,7 +369,7 @@ export default {
     overflow-y: scroll;
   }
 
-  .title-coontainer{
+  .title-coontainer {
     width: 100%;
     display: flex;
     flex-direction: row;
