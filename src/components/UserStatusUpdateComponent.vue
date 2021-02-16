@@ -10,8 +10,8 @@
         >
           Cancel
         </button>
-        <button class="btn btn-danger w-100 font-weight-bold" @click="save">
-          Delete
+        <button class="btn btn-primary w-100 font-weight-bold" @click="save">
+          Confirm
         </button>
       </div>
     </div>
@@ -23,7 +23,7 @@ import { HTTP } from "../network/http";
 let NotificationsController = require("../components/NotificationsController");
 
 export default {
-  name: "DeleteItemModel",
+  name: "UserStatusUpdateComponent",
   props: ["schemtics"],
   data() {
     return {
@@ -34,8 +34,9 @@ export default {
     save() {
       NotificationsController.showActivityIndicator();
       HTTP({
-        method: 'delete',
-        url: this.endpoint
+        method: 'patch',
+        url: this.endpoint,
+        data : this.body
       })
         // HTTP.post(this.endpoint , body)
         .then((response) => {
@@ -65,22 +66,30 @@ export default {
     console.log(schema);
     if (schema === null || schema === undefined) {
       throw new Error(
-        "Delete item component's schemetics is missing in props"
+        "UserStatusUpdateComponent schemetics is missing in props"
       );
     }
 
 
     if (schema.endpoint === null || schema.endpoint === undefined) {
       throw new Error(
-        "Single item creation component's schemetics missing the endpoint variable"
+        "UserStatusUpdateComponent schemetics missing the endpoint variable"
       );
     } else {
       this.endpoint = schema.endpoint;
     }
 
+    if (schema.body === null || schema.body === undefined) {
+      throw new Error(
+        "UserStatusUpdateComponent schemetics missing the endpoint variable"
+      );
+    } else {
+      this.body = schema.body;
+    }
+
     if (schema.title === null || schema.title === undefined) {
       throw new Error(
-        "Single item creation component's schemetics missing the title variable"
+        "UserStatusUpdateComponent schemetics missing the title variable"
       );
     } else {
       this.title = schema.title;
@@ -88,7 +97,7 @@ export default {
 
     if (schema.description === null || schema.description === undefined) {
       throw new Error(
-        "Single item creation component's schemetics missing the description variable"
+        "UserStatusUpdateComponent schemetics missing the description variable"
       );
     } else {
       this.description = schema.description;

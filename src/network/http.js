@@ -53,6 +53,7 @@ const URLS = {
   USER: {
     CREATE: "company/user/create",
     LIST_ALL: "company/user/list/all",
+    UPDATE_STATUS : "company/user/:id/update/status"
   },
 };
 

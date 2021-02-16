@@ -21,7 +21,7 @@
               </div>
               <label type="search" class="form-control">
                 <!-- {{ moment(company.createdAt).format("MMM D YYYY, h:mm:ss a") }} -->
-                {{company.createdAt}}
+                {{ company.createdAt }}
               </label>
             </div>
           </div>
@@ -42,35 +42,47 @@
       <label class="title">Users List</label>
 
       <div class="new-users-container">
-        <table class="table" style="text-align : center">
+        <table class="table">
           <thead>
             <tr>
-              <th style="width : 2.5%" scope="col">#</th>
-              <th style="width : 15%" scope="col">First Name</th>
-              <th style="width : 15%" scope="col">Last Name</th>
-              <th style="width : 17.5%" scope="col">Position</th>
+              <th style="width : 3%" scope="col">#</th>
+              <th style="width : 14%" scope="col">First Name</th>
+              <th style="width : 14%" scope="col">Last Name</th>
+              <th style="width : 11%" scope="col">Position</th>
               <th style="width : 30%" scope="col">Email</th>
-              <th style="width : 17.5%" scope="col">Type</th>
-              <th style="width : 2.5%" scope="col"></th>
+              <th style="width : 9%" scope="col">Type</th>
+              <th style="width : 9%" scope="col">Status</th>
+              <th style="width : 10%" scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-bind:key="user.first_name" v-for="(user, index) in users">
+            <tr v-bind:key="user.first_name" v-for="user in users">
               <th scope="row">{{ user.id }}</th>
               <td>{{ user.first_name }}</td>
               <td>{{ user.last_name }}</td>
               <td>{{ user.position }}</td>
               <td>{{ user.email }}</td>
-              <td>{{ user.user_type.replace('_' , ' ').toUpperCase() }}</td>
+              <td>{{ user.user_type.replace("_", " ").toUpperCase() }}</td>
+              <td>{{ user.status.replace("_", " ").toUpperCase() }}</td>
 
               <td>
                 <div class="btn-group" role="group">
                   <button
+                    v-if="user.status === 'active'"
                     type="button"
                     class="btn btn-outline-danger"
-                    @click="onDeleteItem(index)"
+                    @click="disableUser(user)"
                   >
-                    X
+                    Disable
+                  </button>
+
+                  <button
+                    v-if="user.status === 'archived'"
+                    type="button"
+                    class="btn btn-outline-success"
+                    @click="enableUser(user)"
+                  >
+                    Enable
                   </button>
                 </div>
               </td>
@@ -85,32 +97,76 @@
         </button>
       </div>
     </div>
+
+    <user-status-update-component
+      v-if="showDeleteComponent"
+      :schemtics="companyDeleteSchemetics"
+      @success="onCompanyDeleteSuccess"
+      @cancel="onCompanyDeleteCancelled"
+    ></user-status-update-component>
+
+
   </div>
 </template>
 
 <script>
 import { URLS, HTTP } from "../network/http";
 import moment from "moment";
-
 let NotificationsController = require("../components/NotificationsController.js");
+import DeleteItemModal from "../components/DeleteItemModal.vue";
+import UserStatusUpdateComponent from "../components/UserStatusUpdateComponent.vue";
+
 export default {
   name: "CompanyDetailComponent",
   props: ["model"],
-  components: {},
+  components: {
+    DeleteItemModal,
+    UserStatusUpdateComponent
+  },
   data() {
     return {
       title: "",
       description: "",
       company: {},
       users: [],
+      showDeleteComponent: false,
     };
   },
   methods: {
-    onDeleteItem(index) {
-      if (index == 0) {
+    onCompanyDeleteSuccess() {
+      this.showDeleteComponent = false;
+      this.getCompany();
+    },
+    onCompanyDeleteCancelled() {
+      this.showDeleteComponent = false;
+    },
+    enableUser(user) {
+      if (user === null || user === undefined) {
         return;
       }
-      this.users.splice(index, 1);
+      this.companyDeleteSchemetics = {
+        endpoint: URLS.USER.UPDATE_STATUS.replace(':id' , user.id),
+        title: "Enable User",
+        description: `Are you sure you want to mark user : <b> ${user.first_name} </b>  as active? Once the user is marked as Active , they will be able to use the platform normally`,
+        body : {
+            status : 'active'
+        }
+      };
+      this.showDeleteComponent = true;
+    },
+    disableUser(user) {
+         if (user === null || user === undefined) {
+        return;
+      }
+      this.companyDeleteSchemetics = {
+        endpoint: URLS.USER.UPDATE_STATUS.replace(':id' , user.id),
+        title: "Disable User",
+        description: `Are you sure you want to mark user : <b> ${user.first_name} </b>  as archived Once the user is marked as Archived , they wont be able to use the platform in any capacity at all, but the user data will be kept on the server`,
+        body : {
+            status : 'archived'
+        }
+      };
+      this.showDeleteComponent = true;
     },
     addMore() {
       this.users.push({});
