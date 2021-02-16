@@ -66,7 +66,7 @@
                         v-if="!job.is_active"
                         type="button"
                         class="btn btn-outline-success"
-                        @click="onClickCompanyDetail(company)"
+                        @click="enableJob(job)"
                       >
                         Enable
                       </button>
@@ -74,7 +74,7 @@
                         v-if="job.is_active"
                         type="button"
                         class="btn btn-outline-danger"
-                        @click="onClickCompanyDetail(company)"
+                        @click="disableJob(job)"
                       >
                         Disable
                       </button>
@@ -87,12 +87,12 @@
         </div>
       </div>
 
-      <delete-item-modal
-        :schemtics="companyDeleteSchemetics"
-        v-if="showDeleteCompanyModal"
-        @success="onCompanyDeleteSuccess"
-        @cancel="onCompanyDeleteCancelled"
-      ></delete-item-modal>
+      <job-status-update-component
+        :schemtics="jobUpdateSchemetics"
+        v-if="showUpdateComponent"
+        @success="onUpdateSuccess"
+        @cancel="onUpdateCancelled"
+      ></job-status-update-component>
 
       <jobs-filters-component
         v-if="showFilters"
@@ -110,7 +110,7 @@ import { HTTP, URLS } from "../network/http";
 import Pager from "../components/Pager";
 var NotificationsController = require("../components/NotificationsController.js");
 
-import DeleteItemModal from "../components/DeleteItemModal.vue";
+import JobStatusUpdateComponent from "../components/JobStatusUpdateComponent.vue";
 import JobsFiltersComponent from "../components/JobsFiltersComponent.vue";
 import moment from "moment";
 export default {
@@ -118,7 +118,7 @@ export default {
   components: {
     NavBar,
     Pager,
-    DeleteItemModal,
+    JobStatusUpdateComponent,
     JobsFiltersComponent,
   },
   data() {
@@ -129,8 +129,8 @@ export default {
       page: 1,
       limit: 0,
       jobs: [],
-      companyDeleteSchemetics: {},
-      showDeleteCompanyModal: false,
+      jobUpdateSchemetics: {},
+      showUpdateComponent: false,
       showFilters: false,
       filters: {},
     };
@@ -150,42 +150,38 @@ export default {
       this.showFilters = false;
       this.getJobs();
     },
-    onCompanyDeleteCancelled() {
-      this.showDeleteCompanyModal = false;
-      this.companyDeleteSchemetics = {};
+    onUpdateCancelled() {
+      this.showUpdateComponent = false;
+      this.jobUpdateSchemetics = {};
     },
-    onCompanyDeleteSuccess() {
-      this.showDeleteCompanyModal = false;
-      this.companyDeleteSchemetics = {};
+    onUpdateSuccess() {
+      this.showUpdateComponent = false;
+      this.jobUpdateSchemetics = {};
       this.getJobs();
     },
-    onClickDeleteCompany(company) {
-      let url = URLS.COMPANY.BY_ID.replace(":id", company.id);
-      this.companyDeleteSchemetics = {
+    enableJob(job) {
+      let url = URLS.JOBS.BY_ID.replace(":id", job.id);
+      this.jobUpdateSchemetics = {
         endpoint: url,
-        title: "Delete Company",
-        description: `Are you sure you want to delete <b> ${company.name} </b> from the companies list ?`,
+        title: "Enable Job",
+        description: `Are you sure you want to mark the job : <b> ${job.title} </b> as active ?`,
+        body : {
+          is_active : true
+        }
       };
-      this.showDeleteCompanyModal = true;
+      this.showUpdateComponent = true;
     },
-    onClickUpdateCompany(company) {
-      let url = URLS.COMPANY.UPDATE.replace(":id", company.id);
-      console.log("URL = ", url);
-
-      this.JobCreationComponentSchmetics = {
-        title: "Update Company",
-        method: "patch",
+    disableJob(job) {
+      let url = URLS.JOBS.BY_ID.replace(":id", job.id);
+      this.jobUpdateSchemetics = {
         endpoint: url,
-        fields: [
-          {
-            key: "name",
-            title: "Name",
-            placeholder: "Enter company name here",
-            value: company.name,
-          },
-        ],
+        title: "Disable Job",
+        description: `Are you sure you want to mark the job : <b> ${job.title} </b> as inactive ?`,
+        body : {
+          is_active : false
+        }
       };
-      this.showJobCreationComponent = true;
+      this.showUpdateComponent = true;
     },
     onPageChanged(page) {
       this.page = page;
@@ -198,19 +194,14 @@ export default {
       url = url + "?limit=" + this.resultsPerPage;
       url = url + "&page=" + this.page;
       console.log("HELLO");
-      // if(!this.isFilterEmpty()){
-      //   console.log("filters not empty");
-        
-      // }
 
-
-Object.keys(this.filters).forEach(element=>{
-          console.log("element = " , element);
-          if(this.filters[element]){
-            console.log("this.filters[element] = " , this.filters[element]);
-            url = `${url}&${element}=${this.filters[element]}`
-          }
-        });
+      Object.keys(this.filters).forEach((element) => {
+        console.log("element = ", element);
+        if (this.filters[element]) {
+          console.log("this.filters[element] = ", this.filters[element]);
+          url = `${url}&${element}=${this.filters[element]}`;
+        }
+      });
 
       HTTP.get(url)
         .then((response) => {

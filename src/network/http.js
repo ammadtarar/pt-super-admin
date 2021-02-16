@@ -57,7 +57,8 @@ const URLS = {
   },
   JOBS : {
     CREATE : "company/job/create",
-    LIST_ALL : "company/job/list/all"
+    LIST_ALL : "company/job/list/all",
+    BY_ID : "company/job/:id"
   }
 };
 
