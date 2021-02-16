@@ -34,6 +34,9 @@ const URLS = {
         CREATE : 'company/create',
         UPDATE : 'company/:id/update',
         BY_ID : 'company/:id'
+    },
+    USER : {
+      CREATE : 'company/user/create'
     }
 }
 

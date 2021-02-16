@@ -67,7 +67,7 @@
                     <button type="button" class="btn btn-outline-primary">
                       Details
                     </button>
-                    <button type="button" class="btn btn-outline-primary">
+                    <button type="button" class="btn btn-outline-primary" @click="onClickAddCompanyUsers(company)">
                       Add Users
                     </button>
                     <button
@@ -104,6 +104,15 @@
     @success="onCompanyDeleteSuccess"
     @cancel="onCompanyDeleteCancelled"
     ></delete-item-modal>
+
+    <add-company-users-component
+      :model="newUsersCompany"
+      v-if="showAddCompanyComponent"
+      @success="companyAddUsersSuccess"
+      @cancel="companyAddUsersCancelled"
+    >
+
+    </add-company-users-component>
     </div>
   </div>
 
@@ -116,7 +125,7 @@ import Pager from "../components/Pager";
 var NotificationsController = require("../components/NotificationsController.js");
 import SingleItemCreationComponent from "../components/SingleItemCreationComponent.vue";
 import DeleteItemModal from "../components/DeleteItemModal.vue";
-
+import AddCompanyUsersComponent from "../components/AddCompanyUsersComponent.vue";
 import moment from "moment";
 export default {
   name: "companies",
@@ -124,7 +133,8 @@ export default {
     NavBar,
     Pager,
     SingleItemCreationComponent,
-    DeleteItemModal
+    DeleteItemModal,
+    AddCompanyUsersComponent
   },
   data() {
     return {
@@ -137,10 +147,25 @@ export default {
       showCompanyCreationComponent: false,
       companyCreationComponentSchmetics: {},
       companyDeleteSchemetics : {},
-      showDeleteCompanyModal : false
+      showDeleteCompanyModal : false,
+      showAddCompanyComponent : false,
+      newUsersCompany : {}
     };
   },
   methods: {
+    onClickAddCompanyUsers(company){
+      this.newUsersCompany = company;
+      this.showAddCompanyComponent = true;
+    },
+    companyAddUsersSuccess(){
+      this.showAddCompanyComponent = false;
+      this.newUsersCompany = {};
+      this.getCompanies();
+    },
+    companyAddUsersCancelled(){
+      this.showAddCompanyComponent = false;
+      this.newUsersCompany = false;
+    },
     onCompanyDeleteCancelled(){
       this.showDeleteCompanyModal = false;
       this.companyDeleteSchemetics = {};
