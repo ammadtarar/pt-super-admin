@@ -22,9 +22,9 @@ export default {
   methods: {
     logout() {
       localStorage.removeItem("email");
-          localStorage.removeItem("token");
-          localStorage.removeItem("id");
-          localStorage.removeItem("name");
+      localStorage.removeItem("token");
+      localStorage.removeItem("id");
+      localStorage.removeItem("name");
       this.$router.push({ name: "login" });
     },
   },

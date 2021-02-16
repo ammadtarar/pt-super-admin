@@ -64,7 +64,7 @@
                 </td>
                 <td>
                   <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-primary">
+                    <button type="button" class="btn btn-outline-primary" @click="onClickCompanyDetail(company)">
                       Details
                     </button>
                     <button type="button" class="btn btn-outline-primary" @click="onClickAddCompanyUsers(company)">
@@ -111,8 +111,13 @@
       @success="companyAddUsersSuccess"
       @cancel="companyAddUsersCancelled"
     >
-
     </add-company-users-component>
+
+    <company-detail-component
+      v-if="showCompanyDetail"
+      @hide="showCompanyDetail = false"
+      :model="companyDetailModel"
+    ></company-detail-component>
     </div>
   </div>
 
@@ -126,6 +131,7 @@ var NotificationsController = require("../components/NotificationsController.js"
 import SingleItemCreationComponent from "../components/SingleItemCreationComponent.vue";
 import DeleteItemModal from "../components/DeleteItemModal.vue";
 import AddCompanyUsersComponent from "../components/AddCompanyUsersComponent.vue";
+import CompanyDetailComponent from "../components/CompanyDetailComponent.vue";
 import moment from "moment";
 export default {
   name: "companies",
@@ -134,7 +140,8 @@ export default {
     Pager,
     SingleItemCreationComponent,
     DeleteItemModal,
-    AddCompanyUsersComponent
+    AddCompanyUsersComponent,
+    CompanyDetailComponent
   },
   data() {
     return {
@@ -149,10 +156,16 @@ export default {
       companyDeleteSchemetics : {},
       showDeleteCompanyModal : false,
       showAddCompanyComponent : false,
-      newUsersCompany : {}
+      newUsersCompany : {},
+      showCompanyDetail : false,
+      companyDetailModel : {}
     };
   },
   methods: {
+    onClickCompanyDetail(company){
+      this.companyDetailModel = company;
+      this.showCompanyDetail = true;
+    },
     onClickAddCompanyUsers(company){
       this.newUsersCompany = company;
       this.showAddCompanyComponent = true;

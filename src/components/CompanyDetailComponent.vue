@@ -1,19 +1,47 @@
 <template>
   <div class="modal-mask">
     <div class="user-form-card">
-      <label class="title">{{ title }}</label>
-      <label class="description" v-html="description"></label>
+      <label class="title">Company Details</label>
+
+      <div class="container" style="margin-left : -18px ; margin-bottom : 20px">
+        <div class="row">
+          <div class="col-md-auto">
+            <div class="input-group" style="margin-right : 10px">
+              <div class="input-group-text" id="btnGroupAddon">
+                ID
+              </div>
+              <label type="search" class="form-control">{{ company.id }}</label>
+            </div>
+          </div>
+
+          <div class="col-md-auto">
+            <div class="input-group" style="margin-right : 10px">
+              <div class="input-group-text" id="btnGroupAddon">
+                Date
+              </div>
+              <label type="search" class="form-control">
+                <!-- {{ moment(company.createdAt).format("MMM D YYYY, h:mm:ss a") }} -->
+                {{company.createdAt}}
+              </label>
+            </div>
+          </div>
+
+          <div class="col-md-auto">
+            <div class="input-group" style="margin-right : 10px">
+              <div class="input-group-text" id="btnGroupAddon">
+                Name
+              </div>
+              <label type="search" class="form-control">{{
+                company.name
+              }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <label class="title">Users List</label>
 
       <div class="new-users-container">
-        <button
-          @click="addMore"
-          type="button"
-          class="btn btn-link"
-          style="width : 100px ; margin-left : auto ; outline : none"
-        >
-          Add More
-        </button>
-
         <table class="table" style="text-align : center">
           <thead>
             <tr>
@@ -28,43 +56,12 @@
           </thead>
           <tbody>
             <tr v-bind:key="user.first_name" v-for="(user, index) in users">
-              <th scope="row">{{ index + 1 }}</th>
-              <td>
-                <input
-                  class="form-control"
-                  v-model="user.first_name"
-                  type="text"
-                />
-              </td>
-              <td>
-                <input
-                  class="form-control"
-                  v-model="user.last_name"
-                  type="text"
-                />
-              </td>
-              <td>
-                <input
-                  class="form-control"
-                  v-model="user.position"
-                  type="text"
-                />
-              </td>
-              <td>
-                <input class="form-control" type="text" v-model="user.email" />
-              </td>
-              <td>
-                <select v-model="user.user_type">
-                  <option disabled value="null">Select one type</option>
-                  <option
-                    v-for="item in userTypes"
-                    v-bind:value="item"
-                    v-bind:key="item"
-                  >
-                    {{ item.replace('_' , ' ').toUpperCase() }}
-                  </option>
-                </select>
-              </td>
+              <th scope="row">{{ user.id }}</th>
+              <td>{{ user.first_name }}</td>
+              <td>{{ user.last_name }}</td>
+              <td>{{ user.position }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.user_type.replace('_' , ' ').toUpperCase() }}</td>
 
               <td>
                 <div class="btn-group" role="group">
@@ -83,14 +80,8 @@
       </div>
 
       <div class="actions">
-        <button
-          class="btn btn-outline-primary w-100 font-weight-bold"
-          @click="cancel"
-        >
-          Cancel
-        </button>
-        <button class="btn btn-primary w-100 font-weight-bold" @click="save">
-          Save
+        <button class="btn btn-primary w-100 font-weight-bold" @click="dismiss">
+          Dismiss
         </button>
       </div>
     </div>
@@ -99,18 +90,19 @@
 
 <script>
 import { URLS, HTTP } from "../network/http";
+import moment from "moment";
+
 let NotificationsController = require("../components/NotificationsController.js");
 export default {
-  name: "AddCompanyUsersComponent",
+  name: "CompanyDetailComponent",
   props: ["model"],
   components: {},
   data() {
     return {
       title: "",
       description: "",
-      company: null,
-      users: [{}],
-      userTypes: ["employee", "hr_admin"],
+      company: {},
+      users: [],
     };
   },
   methods: {
@@ -123,46 +115,24 @@ export default {
     addMore() {
       this.users.push({});
     },
-    save() {
-      var isMissingData = false;
-      this.users.forEach((element) => {
-        if (
-          !element.first_name ||
-          !element.last_name ||
-          !element.email ||
-          !element.user_type ||
-          !element.position
-        ) {
-          isMissingData = true;
-          this.$toast.warning(
-            "Missing data. Please make sure you input all fields"
-          );
-          return;
-        } else if (!this.validateEmail(element.email)) {
-          isMissingData = true;
-          this.$toast.warning(`${element.email} is not a valid email`);
-          return;
-        } else {
-          element.companyId = this.company.id;
-          element.user_type = element.user_type.toLowerCase();
-        }
-      });
-
-      if (isMissingData) {
-        return;
-      }
-
-      console.log(JSON.parse(JSON.stringify(this.users)));
-      //   return;
+    dismiss() {
+      this.$emit("hide");
+    },
+    validateEmail(email) {
+      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(String(email).toLowerCase());
+    },
+    cancel() {
+      this.$emit("cancel");
+    },
+    getCompany() {
       NotificationsController.showActivityIndicator();
-      
-      HTTP.post(URLS.USER.CREATE, {
-          users_list : this.users
-      })
+      HTTP.get(`${URLS.COMPANY.BY_ID.replace(":id", this.company.id)}`)
         .then((response) => {
+          console.log("sdoasidosad ==");
+          console.log(response.data.users);
+          this.users = response.data.users;
           NotificationsController.hideActivityIndicator();
-          this.$toast.success(response.data.message);
-          this.$emit("success", response.data);
         })
         .catch((err) => {
           var msg = "";
@@ -176,22 +146,16 @@ export default {
           NotificationsController.hideActivityIndicator();
         });
     },
-    validateEmail(email) {
-      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(String(email).toLowerCase());
-    },
-    cancel() {
-      this.$emit("cancel");
-    },
   },
   mounted() {
+    this.moment = moment;
     let companyProp = this.$props.model;
     if (companyProp === null || companyProp === undefined) {
       throw new Error("AddCompanyUsersComponent is missing the model prop");
     }
     this.company = companyProp;
-    this.title = `Add Users To ${this.company.name}`;
-    this.description = `You can add multiple users to the company at once. Once you click save , and email and login details will be send to all the users.`;
+    this.title = `Company Details`;
+    this.getCompany();
   },
 };
 </script>
@@ -212,7 +176,7 @@ export default {
 
   .user-form-card {
     width: 90%;
-    max-height: 80%;
+    max-height: 90%;
     background-color: white;
     border-radius: 4px;
     padding: 20px;
