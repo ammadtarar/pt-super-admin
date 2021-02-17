@@ -49,9 +49,9 @@
               <thead>
                 <tr>
                   <th style="width : 5%" scope="col">ID</th>
-                  <th style="width : 45%" scope="col">Title</th>
+                  <th style="width : 35%" scope="col">Title</th>
                   <th style="width : 20%" scope="col">Creation Date</th>
-                  <th style="width : 30%" scope="col">Action</th>
+                  <th style="width : 40%" scope="col">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -79,6 +79,13 @@
                       >
                         Update
                       </button>
+                    </div>
+
+                    <div
+                      class="btn-group"
+                      role="group"
+                      style="margin-left : 6px"
+                    >
                       <button
                         type="button"
                         class="btn btn-outline-success"
@@ -96,12 +103,21 @@
 
                       <button
                         type="button"
-                        class="btn btn-outline-danger"
-                        @click="onClickDeleteCompany(company)"
+                        class="btn btn-outline-success"
+                        @click="onClickAddArticle(company)"
                       >
-                        Delete
+                        Add Article
                       </button>
                     </div>
+
+                    <button
+                      style="margin-left : 6px"
+                      type="button"
+                      class="btn btn-outline-danger"
+                      @click="onClickDeleteCompany(company)"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -178,12 +194,29 @@ export default {
       newUsersCompany: {},
       showCompanyDetail: false,
       companyDetailModel: {},
-      creationSchemetics : {}
+      creationSchemetics: {},
     };
   },
   methods: {
+    onClickAddArticle(company) {
+      this.creationSchemetics = {
+        title: "Create New Article",
+        method: "post",
+        endpoint: URLS.ARTICLE.CREATE,
+        fields: [
+          {
+            key: "url",
+            title: "URL",
+            placeholder: "Enter article URL",
+          },
+        ],
+        body: {
+          companyId: company.id,
+        },
+      };
+      this.showCompanyCreationComponent = true;
+    },
     onClickAddNewJob(company) {
-      console.log("onClickAddNewJob");
       this.creationSchemetics = {
         title: "Create New Job",
         method: "post",
@@ -217,9 +250,9 @@ export default {
             placeholder: "Enter job reward points here",
           },
         ],
-        body : {
-          companyId : company.id
-        }
+        body: {
+          companyId: company.id,
+        },
       };
       this.showCompanyCreationComponent = true;
     },
@@ -310,7 +343,47 @@ export default {
       this.showCompanyCreationComponent = false;
       this.getCompanies();
     },
-    companynCreationFailed(err) {},
+    companynCreationFailed(err) {
+      //   "custom" : false,
+      // "title" : "Something",
+      // "thumb_url" : "http://www.google.com"
+
+      if (err.status == 432) {
+        this.showCompanyCreationComponent = false;
+        setTimeout(() => {
+          console.log("in companies");
+          console.log(err.status);
+          this.creationSchemetics = {
+            title: "Create New Article",
+            description : `Failed to automatically fetch detail of the article from the URL. Please manually enter the details to proceed`,
+            method: "post",
+            endpoint: URLS.ARTICLE.CREATE,
+            fields: [
+              {
+                key: "title",
+                title: "Title",
+                placeholder: "Enter article title manually",
+              },
+              {
+                key: "thumb_url",
+                title: "Thumbnail URL",
+                placeholder: "Enter article thumbnail image url",
+              },
+              {
+                key: "url",
+                title: "URL",
+                placeholder: "Enter article URL",
+              },
+            ],
+            body: {
+              companyId: this.creationSchemetics.body.companyId,
+              custom: true,
+            },
+          };
+          this.showCompanyCreationComponent = true;
+        }, 1000);
+      }
+    },
     companyCreationCancelled() {
       this.showCompanyCreationComponent = false;
     },

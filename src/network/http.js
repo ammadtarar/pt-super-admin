@@ -32,10 +32,8 @@ HTTP.interceptors.response.use(
       localStorage.removeItem("name");
       location.reload();
       alert('Session timeout')
-      // this.$router.push({ name: "login" });
     }
-   
-    return error;
+    throw error
   }
 );
 
@@ -58,7 +56,12 @@ const URLS = {
   JOBS : {
     CREATE : "company/job/create",
     LIST_ALL : "company/job/list/all",
-    BY_ID : "company/job/:id"
+    BY_ID : "company/job/:id" 
+  },
+  ARTICLE : {
+    CREATE : "company/article/create",
+    LIST_ALL : "company/article/list/all",
+    UPDATE_STATUS : "company/article/:id/update/status"
   }
 };
 

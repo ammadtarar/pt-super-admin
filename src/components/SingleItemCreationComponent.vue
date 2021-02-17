@@ -2,10 +2,14 @@
   <div class="modal-mask">
     <div class="card">
       <label class="title">{{ title }}</label>
+      <label class="descMsg" v-if="description">{{ description }}</label>
+      
       <form class="form">
         <div v-bind:key="field.key" v-for="field in fields">
           <div class="form-group" v-if="!field.type">
             <label class="ionput-label ">{{ field.title }}</label>
+
+            
             <input
               class="form-control"
               :placeholder="field.placeholder || field.title"
@@ -57,6 +61,7 @@ export default {
   data() {
     return {
       title: "",
+      description : null
     };
   },
   methods: {
@@ -103,6 +108,10 @@ export default {
         })
         .catch((err) => {
           var msg = "";
+          console.log("FUCKED UP");
+          console.log("===");
+          console.log(JSON.stringify(err));
+          console.log("===");
           try {
             msg = err.response.data.message;
           } catch (error) {
@@ -163,6 +172,11 @@ export default {
     if (schema.title) {
       this.title = schema.title;
     }
+    if(schema.description){
+      this.description = schema.description;
+    }else{
+      this.description = null;
+    }
     console.log(this.$props.schemtics.title);
   },
   mounted() {},
@@ -196,6 +210,14 @@ export default {
       line-height: 50px;
       font-size: 20px;
       color: black;
+    }
+
+    .descMsg {
+      width: 100%;
+      font-size: 16px;
+      color: rgb(112, 53, 53);
+      margin-top: -20px;
+      margin-bottom: 20px;
     }
 
     .form {
