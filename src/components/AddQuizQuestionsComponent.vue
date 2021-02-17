@@ -18,46 +18,53 @@
           <thead>
             <tr>
               <th style="width : 2.5%" scope="col">#</th>
-              <th style="width : 15%" scope="col">First Name</th>
-              <th style="width : 15%" scope="col">Last Name</th>
-              <th style="width : 17.5%" scope="col">Position</th>
-              <th style="width : 30%" scope="col">Email</th>
-              <th style="width : 17.5%" scope="col">Type</th>
+              <th style="width : 20%" scope="col">Question</th>
+              <th style="width : 21%" scope="col">Option One</th>
+              <th style="width : 21%" scope="col">Option Two</th>
+              <th style="width : 21%" scope="col">Option Three</th>
+              <th style="width : 12%" scope="col">Correct Option</th>
               <th style="width : 2.5%" scope="col"></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-bind:key="user.first_name" v-for="(user, index) in users">
+            <tr
+              v-bind:key="question.question"
+              v-for="(question, index) in questions"
+            >
               <th scope="row">{{ index + 1 }}</th>
               <td>
                 <input
                   class="form-control"
-                  v-model="user.first_name"
+                  v-model="question.question"
                   type="text"
                 />
               </td>
               <td>
                 <input
                   class="form-control"
-                  v-model="user.last_name"
+                  v-model="question.option_one"
                   type="text"
                 />
               </td>
               <td>
                 <input
                   class="form-control"
-                  v-model="user.position"
+                  v-model="question.option_two"
                   type="text"
                 />
               </td>
               <td>
-                <input class="form-control" type="text" v-model="user.email" />
+                <input
+                  class="form-control"
+                  v-model="question.option_three"
+                  type="text"
+                />
               </td>
               <td>
-                <select v-model="user.user_type" style="text-transform:capitalize;">
+                <select v-model="question.answer" style="text-transform:capitalize;">
                   <option disabled value="null">Select one type</option>
                   <option
-                    v-for="item in userTypes"
+                    v-for="item in options"
                     v-bind:value="item"
                     v-bind:key="item"
                   >
@@ -101,16 +108,16 @@
 import { URLS, HTTP } from "../network/http";
 let NotificationsController = require("../components/NotificationsController.js");
 export default {
-  name: "AddCompanyUsersComponent",
+  name: "AddQuizQuestionsComponent",
   props: ["model"],
   components: {},
   data() {
     return {
       title: "",
       description: "",
-      company: null,
-      users: [{}],
-      userTypes: ["employee", "hr_admin"],
+      quiz: null,
+      questions: [{}],
+      options: ["option_one", "option_two", "option_three"],
     };
   },
   methods: {
@@ -118,33 +125,26 @@ export default {
       if (index == 0) {
         return;
       }
-      this.users.splice(index, 1);
+      this.questions.splice(index, 1);
     },
     addMore() {
-      this.users.push({});
+      this.questions.push({});
     },
     save() {
       var isMissingData = false;
-      this.users.forEach((element) => {
+      this.questions.forEach((element) => {
         if (
-          !element.first_name ||
-          !element.last_name ||
-          !element.email ||
-          !element.user_type ||
-          !element.position
+          !element.question ||
+          !element.option_one ||
+          !element.option_two ||
+          !element.option_three ||
+          !element.answer
         ) {
           isMissingData = true;
           this.$toast.warning(
             "Missing data. Please make sure you input all fields"
           );
           return;
-        } else if (!this.validateEmail(element.email)) {
-          isMissingData = true;
-          this.$toast.warning(`${element.email} is not a valid email`);
-          return;
-        } else {
-          element.companyId = this.company.id;
-          element.user_type = element.user_type.toLowerCase();
         }
       });
 
@@ -152,12 +152,12 @@ export default {
         return;
       }
 
-      console.log(JSON.parse(JSON.stringify(this.users)));
-      //   return;
+      console.log(JSON.parse(JSON.stringify(this.questions)));
+
       NotificationsController.showActivityIndicator();
 
-      HTTP.post(URLS.USER.CREATE, {
-        users_list: this.users,
+      HTTP.post(URLS.QUIZ.ADD_QUESTIONS.replace(":id" , this.quiz.id), {
+        questions: this.questions,
       })
         .then((response) => {
           NotificationsController.hideActivityIndicator();
@@ -176,22 +176,17 @@ export default {
           NotificationsController.hideActivityIndicator();
         });
     },
-    validateEmail(email) {
-      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(String(email).toLowerCase());
-    },
     cancel() {
       this.$emit("cancel");
     },
   },
   mounted() {
-    let companyProp = this.$props.model;
-    if (companyProp === null || companyProp === undefined) {
-      throw new Error("AddCompanyUsersComponent is missing the model prop");
+    if (this.$props.model === null || this.$props.model === undefined) {
+      throw new Error("AddQuizQuestionsComponent is missing the model prop");
     }
-    this.company = companyProp;
-    this.title = `Add Users To ${this.company.name}`;
-    this.description = `You can add multiple users to the company at once. Once you click save , and email and login details will be send to all the users.`;
+    this.quiz = this.$props.model;
+    this.title = `Add Questions To Quiz : ${this.$props.model.title}`;
+    this.description = `You can add multiple questions to the quiz at once. Once you click save`;
   },
 };
 </script>

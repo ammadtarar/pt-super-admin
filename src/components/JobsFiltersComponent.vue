@@ -34,14 +34,14 @@
             <div class="col">
               <div class="form-group">
                 <label class="ionput-label ">Reward Type</label>
-                <select v-model="form.referral_success_reward_type">
+                <select v-model="form.referral_success_reward_type" style="text-transform:capitalize;">
                   <option disabled value="null">Select one type</option>
                   <option
                     v-for="item in reward_types"
                     v-bind:value="item"
                     v-bind:key="item"
                   >
-                    {{ item.replace("_", " ").toUpperCase() }}
+                    {{ item.replace("_", " ") }}
                   </option>
                 </select>
               </div>

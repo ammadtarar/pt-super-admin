@@ -23,14 +23,15 @@
             v-if="field.type && field.type === 'single-option'"
           >
             <label class="ionput-label ">{{ field.title }}</label>
-            <select v-model="field.value">
+            <select v-model="field.value" style="text-transform:capitalize;">
               <option disabled value="null">Select one type</option>
               <option
                 v-for="item in field.options"
                 v-bind:value="item"
                 v-bind:key="item"
+                
               >
-                {{ item.replace("_", " ").toUpperCase() }}
+                {{ item.replace("_", " ") }}
               </option>
             </select>
           </div>
@@ -61,7 +62,8 @@ export default {
   data() {
     return {
       title: "",
-      description : null
+      description : null,
+      body : {}
     };
   },
   methods: {
@@ -162,10 +164,6 @@ export default {
       this.endpoint = schema.endpoint;
     }
 
-    // if(schema.type && schema.type === 'single-option'){
-
-    // }
-
     if(schema.body){
       this.body = schema.body;
     }
@@ -177,7 +175,7 @@ export default {
     }else{
       this.description = null;
     }
-    console.log(this.$props.schemtics.title);
+
   },
   mounted() {},
 };

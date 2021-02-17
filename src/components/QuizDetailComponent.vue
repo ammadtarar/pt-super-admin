@@ -1,91 +1,108 @@
 <template>
   <div class="modal-mask">
     <div class="user-form-card">
-      <label class="title">Company Details</label>
+      <label class="title">{{title}}</label>
 
-      <div class="container" style="margin-left : -18px ; margin-bottom : 20px">
+      <div  style="margin-bottom : 20px">
         <div class="row">
-          <div class="col-md-auto">
-            <div class="input-group" style="margin-right : 10px">
+          <div class="col">
+            <div class="input-group" >
               <div class="input-group-text" id="btnGroupAddon">
                 ID
               </div>
-              <label type="search" class="form-control">{{ company.id }}</label>
+              <label type="search" class="form-control">{{ quiz.id }}</label>
             </div>
           </div>
 
-          <div class="col-md-auto">
-            <div class="input-group" style="margin-right : 10px">
+          <div class="col">
+            <div class="input-group" >
               <div class="input-group-text" id="btnGroupAddon">
                 Date
               </div>
               <label type="search" class="form-control">
                 <!-- {{ moment(company.createdAt).format("MMM D YYYY, h:mm:ss a") }} -->
-                {{ company.createdAt }}
+                {{ quiz.createdAt }}
               </label>
             </div>
           </div>
 
-          <div class="col-md-auto">
-            <div class="input-group" style="margin-right : 10px">
+         
+
+          <div class="col">
+            <div class="input-group" >
+              <div class="input-group-text" id="btnGroupAddon">
+                Level
+              </div>
+              <label type="search" class="form-control">{{
+                quiz.level
+              }}</label>
+            </div>
+          </div>
+
+
+          <div class="col">
+            <div class="input-group" >
+              <div class="input-group-text" id="btnGroupAddon">
+                Status
+              </div>
+              <label type="search" class="form-control">{{
+                quiz.is_active ? 'Active' : 'InActive'
+              }}</label>
+            </div>
+          </div>
+
+
+
+        </div>
+
+        <div class="row">
+           <div class="col">
+            <div class="input-group" >
               <div class="input-group-text" id="btnGroupAddon">
                 Name
               </div>
               <label type="search" class="form-control">{{
-                company.name
+                quiz.title
+              }}</label>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="input-group" >
+              <div class="input-group-text" id="btnGroupAddon">
+                Description
+              </div>
+              <label type="search" class="form-control">{{
+                quiz.description
               }}</label>
             </div>
           </div>
         </div>
       </div>
 
-      <label class="title">Users List</label>
+      <label class="title">Questions</label>
 
       <div class="new-users-container">
         <table class="table">
           <thead>
             <tr>
-              <th style="width : 3%" scope="col">#</th>
-              <th style="width : 14%" scope="col">First Name</th>
-              <th style="width : 14%" scope="col">Last Name</th>
-              <th style="width : 11%" scope="col">Position</th>
-              <th style="width : 30%" scope="col">Email</th>
-              <th style="width : 9%" scope="col">Type</th>
-              <th style="width : 9%" scope="col">Status</th>
-              <th style="width : 10%" scope="col">Actions</th>
+              <th style="width : 2.5%" scope="col">#</th>
+              <th style="width : 22.5%" scope="col">Question</th>
+              <th style="width : 21%" scope="col">Option One</th>
+              <th style="width : 21%" scope="col">Option Two</th>
+              <th style="width : 21%" scope="col">Option Three</th>
+              <th style="width : 12%" scope="col">Correct Option</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-bind:key="user.first_name" v-for="user in users">
-              <th scope="row">{{ user.id }}</th>
-              <td>{{ user.first_name }}</td>
-              <td>{{ user.last_name }}</td>
-              <td>{{ user.position }}</td>
-              <td>{{ user.email }}</td>
-              <td style="text-transform:capitalize;">{{ user.user_type.replace("_", " ") }}</td>
-              <td style="text-transform:capitalize;">{{ user.status.replace("_", " ") }}</td>
+            <tr v-bind:key="question.id" v-for="question in quiz.questions">
+              <th scope="row">{{ question.id }}</th>
+              <td>{{ question.question }}</td>
+              <td>{{ question.option_one }}</td>
+              <td>{{ question.option_two }}</td>
+              <td>{{ question.option_three }}</td>
+              <td style="text-transform:capitalize;">{{ question.answer.replace("_" , " ") }}</td>
 
-              <td>
-                <div class="btn-group" role="group">
-                  <button
-                    v-if="user.status === 'active'"
-                    type="button"
-                    class="btn btn-outline-danger"
-                    @click="disableUser(user)"
-                  >
-                    Disable
-                  </button>
-
-                  <button
-                    v-if="user.status === 'archived'"
-                    type="button"
-                    class="btn btn-outline-success"
-                    @click="enableUser(user)"
-                  >
-                    Enable
-                  </button>
-                </div>
-              </td>
             </tr>
           </tbody>
         </table>
@@ -98,12 +115,6 @@
       </div>
     </div>
 
-    <user-status-update-component
-      v-if="showDeleteComponent"
-      :schemtics="companyDeleteSchemetics"
-      @success="onCompanyDeleteSuccess"
-      @cancel="onCompanyDeleteCancelled"
-    ></user-status-update-component>
 
 
   </div>
@@ -114,46 +125,23 @@ import { URLS, HTTP } from "../network/http";
 import moment from "moment";
 let NotificationsController = require("../components/NotificationsController.js");
 import DeleteItemModal from "../components/DeleteItemModal.vue";
-import UserStatusUpdateComponent from "../components/UserStatusUpdateComponent.vue";
+
 
 export default {
-  name: "CompanyDetailComponent",
+  name: "QuizDetailComponent",
   props: ["model"],
   components: {
-    DeleteItemModal,
-    UserStatusUpdateComponent
+    DeleteItemModal
   },
   data() {
     return {
       title: "",
       description: "",
-      company: {},
-      users: [],
+      quiz: {},
       showDeleteComponent: false,
     };
   },
   methods: {
-    onCompanyDeleteSuccess() {
-      this.showDeleteComponent = false;
-      this.getCompany();
-    },
-    onCompanyDeleteCancelled() {
-      this.showDeleteComponent = false;
-    },
-    enableUser(user) {
-      if (user === null || user === undefined) {
-        return;
-      }
-      this.companyDeleteSchemetics = {
-        endpoint: URLS.USER.UPDATE_STATUS.replace(':id' , user.id),
-        title: "Enable User",
-        description: `Are you sure you want to mark user : <b> ${user.first_name} </b>  as active? Once the user is marked as Active , they will be able to use the platform normally`,
-        body : {
-            status : 'active'
-        }
-      };
-      this.showDeleteComponent = true;
-    },
     disableUser(user) {
          if (user === null || user === undefined) {
         return;
@@ -174,20 +162,14 @@ export default {
     dismiss() {
       this.$emit("hide");
     },
-    validateEmail(email) {
-      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(String(email).toLowerCase());
-    },
     cancel() {
       this.$emit("cancel");
     },
-    getCompany() {
+    getQuiz() {
       NotificationsController.showActivityIndicator();
-      HTTP.get(`${URLS.COMPANY.BY_ID.replace(":id", this.company.id)}`)
+      HTTP.get(URLS.QUIZ.BY_ID.replace(":id", this.quiz.id))
         .then((response) => {
-          console.log("sdoasidosad ==");
-          console.log(response.data.users);
-          this.users = response.data.users;
+          this.quiz = response.data;
           NotificationsController.hideActivityIndicator();
         })
         .catch((err) => {
@@ -205,13 +187,12 @@ export default {
   },
   mounted() {
     this.moment = moment;
-    let companyProp = this.$props.model;
-    if (companyProp === null || companyProp === undefined) {
-      throw new Error("AddCompanyUsersComponent is missing the model prop");
+    if (this.$props.model === null || this.$props.model === undefined) {
+      throw new Error("QuizDetailComponent is missing the model prop");
     }
-    this.company = companyProp;
-    this.title = `Company Details`;
-    this.getCompany();
+    this.quiz = this.$props.model;
+    this.title = `Quiz Details`;
+    this.getQuiz();
   },
 };
 </script>
@@ -229,6 +210,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  .col{
+    margin-top: 5px;
+  }
 
   .user-form-card {
     width: 90%;

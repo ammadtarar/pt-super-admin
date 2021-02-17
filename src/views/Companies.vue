@@ -295,7 +295,7 @@ export default {
       let url = URLS.COMPANY.UPDATE.replace(":id", company.id);
       console.log("URL = ", url);
 
-      this.companyCreationComponentSchmetics = {
+      this.creationSchemetics = {
         title: "Update Company",
         method: "patch",
         endpoint: url,

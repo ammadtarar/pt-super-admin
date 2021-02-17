@@ -62,6 +62,12 @@ const URLS = {
     CREATE : "company/article/create",
     LIST_ALL : "company/article/list/all",
     UPDATE_STATUS : "company/article/:id/update/status"
+  },
+  QUIZ : {
+    CREATE : "company/quiz/create",
+    LIST_ALL : "company/quiz/list/all",
+    BY_ID : "company/quiz/:id",
+    ADD_QUESTIONS : "company/quiz/:id/add/questions"
   }
 };
 

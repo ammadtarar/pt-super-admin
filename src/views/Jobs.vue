@@ -57,7 +57,7 @@
                   <td>{{ job.company.name }}</td>
                   <td>{{ job.location }}</td>
                   <td>{{ job.url }}</td>
-                  <td>{{ job.referral_success_reward_type }}</td>
+                  <td style="text-transform:capitalize;">{{ job.referral_success_reward_type }}</td>
                   <td>{{ job.referral_success_reward_value }}</td>
                   <td>{{ job.is_active ? "Active" : "InActive" }}</td>
                   <td>
