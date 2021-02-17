@@ -100,9 +100,9 @@ export default {
     redirect() {
         this.$toast.clear()
         if(this.$route.redirectedFrom && this.$route.redirectedFrom.fullPath){
-            this.$router.push(this.$route.redirectedFrom.fullPath || '/home')    
+            this.$router.push(this.$route.redirectedFrom.fullPath || '/companies')    
         }else{
-            this.$router.push('/home')
+            this.$router.push('/companies')
         }
     },
   },

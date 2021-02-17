@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue';
+// import Home from '../views/Home.vue';
 import Login from '../views/Login.vue';
 import Companies from '../views/Companies.vue';
 import Jobs from '../views/Jobs.vue';
@@ -12,17 +12,17 @@ const routes = [
     name: 'login',
     component: Login
   },
-  {
-    path: '/home',
-    name: 'home',
-    component: Home,
-    meta: {
-      requiresAuth: true
-    } 
-  },
+  // {
+  //   path: '/home',
+  //   name: 'home',
+  //   component: Home,
+  //   meta: {
+  //     requiresAuth: true
+  //   } 
+  // },
   {
     path: '/companies',
-    name: 'companoes',
+    name: 'companies',
     component: Companies,
     meta: {
       requiresAuth: true
