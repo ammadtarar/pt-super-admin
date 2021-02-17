@@ -45,30 +45,30 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-bind:key="job.id" v-for="job in articles">
-                  <th scope="row">{{ job.id }}</th>
+                <tr v-bind:key="article.id" v-for="article in articles">
+                  <th scope="row">{{ article.id }}</th>
                   <td>
-                    {{ moment(job.createdAt).format("MMM D YYYY") }}
+                    {{ moment(article.createdAt).format("MMM D YYYY") }}
                   </td>
-                  <td>{{ job.title }}</td>
-                  <td>{{ job.company.name }}</td>
-                  <td>{{ job.original_url }}</td>
-                  <td>{{ job.is_active ? "Active" : "InActive" }}</td>
+                  <td>{{ article.title }}</td>
+                  <td>{{ article.company.name }}</td>
+                  <td>{{ article.original_url }}</td>
+                  <td>{{ article.is_active ? "Active" : "InActive" }}</td>
                   <td>
                     <div class="btn-group" role="group">
                       <button
-                        v-if="!job.is_active"
+                        v-if="!article.is_active"
                         type="button"
                         class="btn btn-outline-success"
-                        @click="enableJob(job)"
+                        @click="enableArticle(article)"
                       >
                         Enable
                       </button>
                       <button
-                        v-if="job.is_active"
+                        v-if="article.is_active"
                         type="button"
                         class="btn btn-outline-danger"
-                        @click="disableJob(job)"
+                        @click="disableArticle(article)"
                       >
                         Disable
                       </button>
@@ -82,7 +82,7 @@
       </div>
 
       <job-status-update-component
-        :schemtics="jobUpdateSchemetics"
+        :schemtics="articleUpdateSchemetics"
         v-if="showUpdateComponent"
         @success="onUpdateSuccess"
         @cancel="onUpdateCancelled"
@@ -126,7 +126,7 @@ export default {
       page: 1,
       limit: 0,
       articles: [],
-      jobUpdateSchemetics: {},
+      articleUpdateSchemetics: {},
       showUpdateComponent: false,
       showFilters: false,
       filters: {},
@@ -149,16 +149,16 @@ export default {
     },
     onUpdateCancelled() {
       this.showUpdateComponent = false;
-      this.jobUpdateSchemetics = {};
+      this.articleUpdateSchemetics = {};
     },
     onUpdateSuccess() {
       this.showUpdateComponent = false;
-      this.jobUpdateSchemetics = {};
+      this.articleUpdateSchemetics = {};
       this.getArticles();
     },
-    enableJob(article) {
+    enableArticle(article) {
       let url = URLS.ARTICLE.UPDATE_STATUS.replace(":id", article.id);
-      this.jobUpdateSchemetics = {
+      this.articleUpdateSchemetics = {
         endpoint: url,
         title: "Enable Article",
         description: `Are you sure you want to mark the article : <b> ${article.title} </b> as active ?`,
@@ -168,9 +168,9 @@ export default {
       };
       this.showUpdateComponent = true;
     },
-    disableJob(article) {
+    disableArticle(article) {
       let url = URLS.ARTICLE.UPDATE_STATUS.replace(":id", article.id);
-      this.jobUpdateSchemetics = {
+      this.articleUpdateSchemetics = {
         endpoint: url,
         title: "Disable Article",
         description: `Are you sure you want to mark the article : <b> ${article.title} </b> as inactive ?`,
