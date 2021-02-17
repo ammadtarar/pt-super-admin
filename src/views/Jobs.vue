@@ -87,12 +87,12 @@
         </div>
       </div>
 
-      <job-status-update-component
+      <item-update-status-component
         :schemtics="jobUpdateSchemetics"
         v-if="showUpdateComponent"
         @success="onUpdateSuccess"
         @cancel="onUpdateCancelled"
-      ></job-status-update-component>
+      ></item-update-status-component>
 
       <jobs-filters-component
         v-if="showFilters"
@@ -110,7 +110,7 @@ import { HTTP, URLS } from "../network/http";
 import Pager from "../components/Pager";
 var NotificationsController = require("../components/NotificationsController.js");
 
-import JobStatusUpdateComponent from "../components/JobStatusUpdateComponent.vue";
+import ItemUpdateStatusComponent from "../components/ItemUpdateStatusComponent.vue";
 import JobsFiltersComponent from "../components/JobsFiltersComponent.vue";
 import moment from "moment";
 export default {
@@ -118,7 +118,7 @@ export default {
   components: {
     NavBar,
     Pager,
-    JobStatusUpdateComponent,
+    ItemUpdateStatusComponent,
     JobsFiltersComponent,
   },
   data() {

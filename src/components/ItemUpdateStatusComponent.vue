@@ -23,7 +23,7 @@ import { HTTP } from "../network/http";
 let NotificationsController = require("../components/NotificationsController");
 
 export default {
-  name: "JobStatusUpdateComponent",
+  name: "ItemUpdateStatusComponent",
   props: ["schemtics"],
   data() {
     return {
