@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://dev.api.pushtalents.sawatechnologies.org/";
+const baseURL = "https://dev.api.pushtalents.sawatechnologies.org/";
 axios.defaults.baseURL = baseURL;
 
 const HTTP = axios.create({
