@@ -56,7 +56,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-bind:key="user.first_name" v-for="user in users">
+            <tr v-bind:key="index" v-for="(user , index) in users">
               <th scope="row">{{ user.id }}</th>
               <td>{{ user.first_name }}</td>
               <td>{{ user.last_name }}</td>

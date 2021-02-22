@@ -28,14 +28,14 @@
           </thead>
           <tbody>
             <tr
-              v-bind:key="question.question"
+              v-bind:key="index"
               v-for="(question, index) in questions"
             >
               <th scope="row">{{ index + 1 }}</th>
               <td>
                 <input
                   class="form-control"
-                  v-model="question.question"
+                  v-model.trim="question.question"
                   type="text"
                 />
               </td>

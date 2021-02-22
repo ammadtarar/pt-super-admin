@@ -114,7 +114,7 @@
         v-if="showAddQuestionsComponent"
         :model="quizToAddQuestionsTo"
         @success="questionsAddSuccess"
-        @cancel="questionsAddFailed"
+        @cancel="questionsAddCancelled"
       ></add-quiz-questions-component>
 
       <quiz-detail-component
@@ -181,7 +181,11 @@ export default {
     questionsAddSuccess(){
       this.showAddQuestionsComponent = false;
     },
-    questionsAddFailed(){},
+    questionsAddCancelled(){
+      console.log("inside questionsAddCancelled - wtf");
+      this.quizToAddQuestionsTo = {};
+      this.showAddQuestionsComponent = false;
+    },
     onClickUpdate(quiz){
       this.creationSchemetics = {
         type : 'update',
