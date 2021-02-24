@@ -87,11 +87,12 @@
           <thead>
             <tr>
               <th style="width : 2.5%" scope="col">#</th>
-              <th style="width : 22.5%" scope="col">Question</th>
-              <th style="width : 21%" scope="col">Option One</th>
-              <th style="width : 21%" scope="col">Option Two</th>
-              <th style="width : 21%" scope="col">Option Three</th>
+              <th style="width : 20.5%" scope="col">Question</th>
+              <th style="width : 20%" scope="col">Option One</th>
+              <th style="width : 20%" scope="col">Option Two</th>
+              <th style="width : 20%" scope="col">Option Three</th>
               <th style="width : 12%" scope="col">Correct Option</th>
+              <th style="width : 5%" scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -102,6 +103,18 @@
               <td>{{ question.option_two }}</td>
               <td>{{ question.option_three }}</td>
               <td style="text-transform:capitalize;">{{ question.answer.replace("_" , " ") }}</td>
+
+              <td>
+                    <div class="btn-group" role="group">
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary"
+                        @click="editQuestion(question)"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  </td>
 
             </tr>
           </tbody>
@@ -115,7 +128,13 @@
       </div>
     </div>
 
-
+    <single-item-creation-component
+        v-if="showQuestionUpdateComponent"
+        :schemtics="updateSchemetics"
+        @success="questionUpdateSuccess"
+        @fail="quesitonUpdateFailed"
+        @cancel="questionUpdateCancelled"
+      ></single-item-creation-component>
 
   </div>
 </template>
@@ -124,40 +143,82 @@
 import { URLS, HTTP } from "../network/http";
 import moment from "moment";
 let NotificationsController = require("../components/NotificationsController.js");
-import DeleteItemModal from "../components/DeleteItemModal.vue";
 
+import SingleItemCreationComponent from "../components/SingleItemCreationComponent";
 
 export default {
   name: "QuizDetailComponent",
   props: ["model"],
   components: {
-    DeleteItemModal
+    SingleItemCreationComponent
   },
   data() {
     return {
       title: "",
       description: "",
       quiz: {},
-      showDeleteComponent: false,
+      showQuestionUpdateComponent : false,
+      updateSchemetics : {}
     };
   },
   methods: {
-    disableUser(user) {
-         if (user === null || user === undefined) {
-        return;
-      }
-      this.companyDeleteSchemetics = {
-        endpoint: URLS.USER.UPDATE_STATUS.replace(':id' , user.id),
-        title: "Disable User",
-        description: `Are you sure you want to mark user : <b> ${user.first_name} </b>  as archived Once the user is marked as Archived , they wont be able to use the platform in any capacity at all, but the user data will be kept on the server`,
-        body : {
-            status : 'archived'
-        }
+    editQuestion(question){
+      console.log(question);
+      this.updateSchemetics = {
+        type : 'update',
+        title: "Update Question",
+        method: "patch",
+        endpoint: URLS.QUIZ.QUETION_BY_ID.replace(":id" , question.id),
+        fields: [
+          {
+            key: "question",
+            title: "Question",
+            value : question.question,
+            placeholder:  question.question || "Enter question",
+          },
+          
+          {
+            key: "option_one",
+            title: "Option One",
+            value : question.option_one,
+            placeholder:  question.option_one || "Enter option one",
+          },
+          {
+            key: "option_two",
+            title: "Option Two",
+            value : question.option_two,
+            placeholder:  question.option_one || "Enter option two",
+          },
+          {
+            key: "option_three",
+            title: "Option Three",
+            value : question.option_three,
+            placeholder:  question.option_three || "Enter option three",
+          },
+
+          {
+            key: "answer",
+            title: "Answer",
+            value : question.answer,
+            placeholder: "Select one option",
+            type: "single-option",
+            options: ["option_one", "option_two" , "option_three"],
+          },
+        ],
       };
-      this.showDeleteComponent = true;
+      this.showQuestionUpdateComponent = true
     },
-    addMore() {
-      this.users.push({});
+    questionUpdateSuccess(){
+      this.showQuestionUpdateComponent = false;
+      this.updateSchemetics = {};
+      this.getQuiz();
+    },
+    quesitonUpdateFailed(){
+
+    },
+    questionUpdateCancelled(){
+      this.showQuestionUpdateComponent = false;
+      this.updateSchemetics = {}
     },
     dismiss() {
       this.$emit("hide");

@@ -68,14 +68,8 @@ export default {
   },
   methods: {
     clear() {
-      console.log("clearing...");
-      console.log("this.title = ", this.title);
-
       this.title = "";
-      console.log("this.title = ", this.title);
-      console.log("this.fields = ", this.fields);
       this.fields = [];
-      console.log("this.fields = ", this.fields);
       this.endpoint = "";
     },
     save() {
@@ -110,10 +104,6 @@ export default {
         })
         .catch((err) => {
           var msg = "";
-          console.log("FUCKED UP");
-          console.log("===");
-          console.log(JSON.stringify(err));
-          console.log("===");
           try {
             msg = err.response.data.message;
           } catch (error) {
@@ -130,10 +120,8 @@ export default {
     },
   },
   created() {
-    console.log("Component created");
     this.clear();
     let schema = this.$props.schemtics;
-    console.log(schema);
     if (schema === null || schema === undefined) {
       throw new Error(
         "Single item creation component's schemetics is missing in props"

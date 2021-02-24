@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const baseURL = "https://dev.api.pushtalents.sawatechnologies.org/";
+// const baseURL = "http://localhost:3001/";
 axios.defaults.baseURL = baseURL;
 
 const HTTP = axios.create({
@@ -67,7 +68,8 @@ const URLS = {
     CREATE : "company/quiz/create",
     LIST_ALL : "company/quiz/list/all",
     BY_ID : "company/quiz/:id",
-    ADD_QUESTIONS : "company/quiz/:id/add/questions"
+    ADD_QUESTIONS : "company/quiz/:id/add/questions",
+    QUETION_BY_ID : "company/quiz/question/:id"
   }
 };
 
