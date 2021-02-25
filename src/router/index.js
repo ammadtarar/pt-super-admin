@@ -5,6 +5,7 @@ import Companies from '../views/Companies.vue';
 import Jobs from '../views/Jobs.vue';
 import Quizzes from '../views/Quizzes.vue';
 import Articles from '../views/Articles.vue';
+import Settings from '../views/Settings.vue';
 
 const routes = [
   {
@@ -48,6 +49,14 @@ const routes = [
     path: '/articles',
     name: 'articles',
     component: Articles,
+    meta: {
+      requiresAuth: true
+    } 
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: Settings,
     meta: {
       requiresAuth: true
     } 

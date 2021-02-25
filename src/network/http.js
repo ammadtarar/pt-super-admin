@@ -70,6 +70,10 @@ const URLS = {
     BY_ID : "company/quiz/:id",
     ADD_QUESTIONS : "company/quiz/:id/add/questions",
     QUETION_BY_ID : "company/quiz/question/:id"
+  },
+  SETTINGS : {
+    DETAIL : "settings",
+    UPDATE : "settings/update"
   }
 };
 

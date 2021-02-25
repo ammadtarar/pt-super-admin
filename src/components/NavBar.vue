@@ -1,11 +1,11 @@
 <template>
   <div id="nav">
     <img src="../assets/pt-logo.png" />
-    <!-- <router-link to="/home">Home</router-link> -->
     <router-link to="/companies">Companies</router-link>
     <router-link to="/jobs">Jobs</router-link>
     <router-link to="/articles">Articles</router-link>
     <router-link to="/quizzes">Quizzes</router-link>
+    <router-link to="/settings">Settings</router-link>
     <button
       class="btn btn-primary w-10 font-weight-bold logout"
       @click="logout"
