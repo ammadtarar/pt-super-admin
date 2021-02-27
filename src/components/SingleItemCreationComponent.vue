@@ -2,21 +2,30 @@
   <div class="modal-mask">
     <div class="card">
       <label class="title">{{ title }}</label>
-      <label class="descMsg" v-if="description">{{ description }}</label>
-      
-      <form class="form">
-        <div v-bind:key="field.key" v-for="field in fields">
-          <div class="form-group" v-if="!field.type">
-            <label class="ionput-label ">{{ field.title }}</label>
 
-            
+      <label class="descMsg" v-if="description">{{ description }}</label>
+
+      <form class="form">
+        <div class="custom-btn-div" v-if="showCustomButton">
+          <label class="ionput-label">Auto Fetch Data</label>
+          <label class="switch">
+            <input type="checkbox" v-model="customEnabled" />
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <div v-bind:key="field.key" v-for="field in fields">
+          <div
+            class="form-group"
+            v-if="!field.type && !(customEnabled && field.canAutoDetect)"
+          >
+            <label class="ionput-label ">{{ field.title }}</label>
             <input
               class="form-control"
               :placeholder="field.placeholder || field.title"
               v-model="field.value"
             />
           </div>
-
           <div
             class="form-group"
             style="display : flex; flex-direction : column"
@@ -29,7 +38,6 @@
                 v-for="item in field.options"
                 v-bind:value="item"
                 v-bind:key="item"
-                
               >
                 {{ item.replace("_", " ") }}
               </option>
@@ -62,8 +70,10 @@ export default {
   data() {
     return {
       title: "",
-      description : null,
-      body : {}
+      description: null,
+      body: {},
+      showCustomButton: false,
+      customEnabled: false,
     };
   },
   methods: {
@@ -75,14 +85,19 @@ export default {
     save() {
       var missingField = false;
       var body = this.body || {};
+
+      body.custom = this.showCustomButton && this.customEnabled;
+
       this.fields.forEach((element) => {
-        if (!element.value) {
-          this.$toast.warning(`${element.title} is missing`);
-          missingField = true;
-          return;
-        } else {
-          body[element.key] = element.value;
-          element.value = "";
+        if (!(element.canAutoDetect && this.customEnabled)) {
+          if (!element.value) {
+            this.$toast.warning(`${element.title} is missing`);
+            missingField = true;
+            return;
+          } else {
+            body[element.key] = element.value;
+            // element.value = "";
+          }
         }
       });
 
@@ -110,8 +125,12 @@ export default {
             msg = err.message;
           }
           this.$toast.error(msg);
-          this.$emit("fail", err.response);
           NotificationsController.hideActivityIndicator();
+          if(err.response.status == 432 && this.showCustomButton){
+            this.customEnabled = false
+          }else{
+            this.$emit("fail", err.response);
+          }
         });
     },
     cancel() {
@@ -152,18 +171,21 @@ export default {
       this.endpoint = schema.endpoint;
     }
 
-    if(schema.body){
+    if (schema.body) {
       this.body = schema.body;
     }
     if (schema.title) {
       this.title = schema.title;
     }
-    if(schema.description){
+    if (schema.description) {
       this.description = schema.description;
-    }else{
+    } else {
       this.description = null;
     }
 
+    if (schema.showCustomButton) {
+      this.showCustomButton = true;
+    }
   },
   mounted() {},
 };
@@ -221,6 +243,73 @@ export default {
       flex-direction: row;
       margin-top: 20px;
     }
+  }
+
+  .custom-btn-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+  }
+
+  input:checked + .slider {
+    background-color: #2196f3;
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196f3;
+  }
+
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
   }
 }
 </style>

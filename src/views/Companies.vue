@@ -203,7 +203,20 @@ export default {
         title: "Create New Article",
         method: "post",
         endpoint: URLS.ARTICLE.CREATE,
+        showCustomButton: true,
         fields: [
+          {
+            key: "title",
+            title: "Title",
+            placeholder: "Enter article title",
+            canAutoDetect: true
+          },
+          {
+            key: "thumb_url",
+            title: "Thumbnail URL",
+            placeholder: "Enter article thumbnail image url",
+            canAutoDetect: true
+          },
           {
             key: "url",
             title: "URL",
@@ -211,6 +224,7 @@ export default {
           },
         ],
         body: {
+          custom : false,
           companyId: company.id,
         },
       };
@@ -221,11 +235,13 @@ export default {
         title: "Create New Job",
         method: "post",
         endpoint: URLS.JOBS.CREATE,
+        showCustomButton: true,
         fields: [
           {
             key: "title",
             title: "Title",
             placeholder: "Enter job title here",
+            canAutoDetect: true,
           },
           {
             key: "location",
@@ -347,42 +363,41 @@ export default {
       //   "custom" : false,
       // "title" : "Something",
       // "thumb_url" : "http://www.google.com"
-
-      if (err.status == 432) {
-        this.showCompanyCreationComponent = false;
-        setTimeout(() => {
-          console.log("in companies");
-          console.log(err.status);
-          this.creationSchemetics = {
-            title: "Create New Article",
-            description : `Failed to automatically fetch detail of the article from the URL. Please manually enter the details to proceed`,
-            method: "post",
-            endpoint: URLS.ARTICLE.CREATE,
-            fields: [
-              {
-                key: "title",
-                title: "Title",
-                placeholder: "Enter article title manually",
-              },
-              {
-                key: "thumb_url",
-                title: "Thumbnail URL",
-                placeholder: "Enter article thumbnail image url",
-              },
-              {
-                key: "url",
-                title: "URL",
-                placeholder: "Enter article URL",
-              },
-            ],
-            body: {
-              companyId: this.creationSchemetics.body.companyId,
-              custom: true,
-            },
-          };
-          this.showCompanyCreationComponent = true;
-        }, 1000);
-      }
+      // if (err.status == 432) {
+      //   this.showCompanyCreationComponent = false;
+      //   setTimeout(() => {
+      //     console.log("in companies");
+      //     console.log(err.status);
+      //     this.creationSchemetics = {
+      //       title: "Create New Article",
+      //       description : `Failed to automatically fetch detail of the article from the URL. Please manually enter the details to proceed`,
+      //       method: "post",
+      //       endpoint: URLS.ARTICLE.CREATE,
+      //       fields: [
+      //         {
+      //           key: "title",
+      //           title: "Title",
+      //           placeholder: "Enter article title manually",
+      //         },
+      //         {
+      //           key: "thumb_url",
+      //           title: "Thumbnail URL",
+      //           placeholder: "Enter article thumbnail image url",
+      //         },
+      //         {
+      //           key: "url",
+      //           title: "URL",
+      //           placeholder: "Enter article URL",
+      //         },
+      //       ],
+      //       body: {
+      //         companyId: this.creationSchemetics.body.companyId,
+      //         custom: true,
+      //       },
+      //     };
+      //     this.showCompanyCreationComponent = true;
+      //   }, 1000);
+      // }
     },
     companyCreationCancelled() {
       this.showCompanyCreationComponent = false;

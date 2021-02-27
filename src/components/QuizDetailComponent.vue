@@ -113,6 +113,14 @@
                       >
                         Edit
                       </button>
+
+                        <button
+                        type="button"
+                        class="btn btn-outline-danger"
+                        @click="onClickDeleteQuestion(question)"
+                      >
+                        Delete
+                      </button>
                     </div>
                   </td>
 
@@ -136,6 +144,14 @@
         @cancel="questionUpdateCancelled"
       ></single-item-creation-component>
 
+
+      <delete-item-modal
+        :schemtics="questionDeleteSchemetics"
+        v-if="showDeleteModal"
+        @success="onQuestionDeleteSuccess"
+        @cancel="onQuestionDeleteCancel"
+      ></delete-item-modal>
+
   </div>
 </template>
 
@@ -145,12 +161,14 @@ import moment from "moment";
 let NotificationsController = require("../components/NotificationsController.js");
 
 import SingleItemCreationComponent from "../components/SingleItemCreationComponent";
+import DeleteItemModal from "./DeleteItemModal";
 
 export default {
   name: "QuizDetailComponent",
   props: ["model"],
   components: {
-    SingleItemCreationComponent
+    SingleItemCreationComponent,
+    DeleteItemModal
   },
   data() {
     return {
@@ -158,10 +176,32 @@ export default {
       description: "",
       quiz: {},
       showQuestionUpdateComponent : false,
-      updateSchemetics : {}
+      updateSchemetics : {},
+      showDeleteModal : false,
+      questionDeleteSchemetics : {}
     };
   },
   methods: {
+    onClickDeleteQuestion(question){
+      console.log("onClickDeleteQuestion");
+      let url = URLS.QUIZ.QUETION_BY_ID.replace(":id", question.id);
+      this.questionDeleteSchemetics = {
+        endpoint: url,
+        title: "Delete Quesstion",
+        description: `Are you sure you want to delete <b> ${question.question} </b> from the this quiz ?`,
+      };
+      console.log("questionDeleteSchemetics = " , this.questionDeleteSchemetics);
+      this.showDeleteModal = true;
+    },
+    onQuestionDeleteSuccess(){
+      this.showDeleteModal = false
+      this.questionDeleteSchemetics = {};
+      this.getQuiz();
+    },
+    onQuestionDeleteCancel(){
+      this.showDeleteModal = false
+      this.questionDeleteSchemetics = {};
+    },
     editQuestion(question){
       console.log(question);
       this.updateSchemetics = {
