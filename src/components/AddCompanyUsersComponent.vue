@@ -61,7 +61,7 @@
                     v-bind:value="item"
                     v-bind:key="item"
                   >
-                    {{ item.replace("_", " ")}}
+                    {{ item.replace("_", " ").replace("_", " ").replace("_", " ")}}
                   </option>
                 </select>
               </td>
@@ -110,7 +110,7 @@ export default {
       description: "",
       company: null,
       users: [{}],
-      userTypes: ["employee", "hr_admin"],
+      userTypes: ["employee", "hr_admin" , "hr_admin_and_employee"],
     };
   },
   methods: {

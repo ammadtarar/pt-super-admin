@@ -49,8 +49,8 @@
               <th style="width : 14%" scope="col">First Name</th>
               <th style="width : 14%" scope="col">Last Name</th>
               <th style="width : 11%" scope="col">Position</th>
-              <th style="width : 30%" scope="col">Email</th>
-              <th style="width : 9%" scope="col">Type</th>
+              <th style="width : 25%" scope="col">Email</th>
+              <th style="width : 14%" scope="col">Type</th>
               <th style="width : 9%" scope="col">Status</th>
               <th style="width : 10%" scope="col">Actions</th>
             </tr>
@@ -62,7 +62,7 @@
               <td>{{ user.last_name }}</td>
               <td>{{ user.position }}</td>
               <td>{{ user.email }}</td>
-              <td style="text-transform:capitalize;">{{ user.user_type.replace("_", " ") }}</td>
+              <td style="text-transform:capitalize;">{{ user.user_type.replace("_", " ").replace("_", " ").replace("_", " ") }}</td>
               <td style="text-transform:capitalize;">{{ user.status.replace("_", " ") }}</td>
 
               <td>
