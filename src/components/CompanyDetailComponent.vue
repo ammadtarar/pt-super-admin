@@ -68,6 +68,14 @@
               <td>
                 <div class="btn-group" role="group">
                   <button
+                    type="button"
+                    class="btn btn-outline-warning"
+                    @click="editUser(user)"
+                  >
+                    Edit
+                  </button>
+
+                  <button
                     v-if="user.status === 'active'"
                     type="button"
                     class="btn btn-outline-danger"
@@ -106,6 +114,15 @@
     ></user-status-update-component>
 
 
+     <single-item-creation-component
+        v-if="showEditUserComponent"
+        :schemtics="editUserScheme"
+        @success="onUserUpdateSuccess"
+        @fail="onUserUpdateFailed"
+        @cancel="onUserUpdateCancelled"
+      ></single-item-creation-component>
+
+
   </div>
 </template>
 
@@ -115,13 +132,15 @@ import moment from "moment";
 let NotificationsController = require("../components/NotificationsController.js");
 import DeleteItemModal from "../components/DeleteItemModal.vue";
 import UserStatusUpdateComponent from "../components/UserStatusUpdateComponent.vue";
+import SingleItemCreationComponent from "../components/SingleItemCreationComponent.vue";
 
 export default {
   name: "CompanyDetailComponent",
   props: ["model"],
   components: {
     DeleteItemModal,
-    UserStatusUpdateComponent
+    UserStatusUpdateComponent,
+    SingleItemCreationComponent
   },
   data() {
     return {
@@ -130,9 +149,55 @@ export default {
       company: {},
       users: [],
       showDeleteComponent: false,
+      showEditUserComponent : false,
+      editUserScheme : {}
     };
   },
   methods: {
+    editUser(user){
+      console.log("edit user");
+      console.log(user);
+
+      this.editUserScheme = {
+        type : 'update',
+        title: "Update User",
+        method: "patch",
+        endpoint: URLS.USER.BY_ID.replace(":id" , user.id),
+        fields: [
+          {
+            key: "first_name",
+            title: "First name",
+            value : user.first_name,
+            placeholder:  user.first_name || "Enter users' first name",
+          },
+          
+          {
+            key: "last_name",
+            title: "Last name",
+            value : user.last_name,
+            placeholder:  user.last_name || "Enter users' last name",
+          },
+          {
+            key: "position",
+            title: "Position",
+            value : user.position,
+            placeholder:  user.position || "Enter users' position",
+          },
+        ],
+      };
+
+      this.showEditUserComponent = true;
+    },
+    onUserUpdateSuccess(){
+      this.showEditUserComponent = false;
+      this.editUserScheme = {};
+      this.getCompany();
+    },
+    onUserUpdateFailed(){},
+    onUserUpdateCancelled(){
+      this.showEditUserComponent = false;
+      this.editUserScheme = {};
+    },
     onCompanyDeleteSuccess() {
       this.showDeleteComponent = false;
       this.getCompany();

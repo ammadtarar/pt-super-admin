@@ -52,7 +52,8 @@ const URLS = {
   USER: {
     CREATE: "company/user/create",
     LIST_ALL: "company/user/list/all",
-    UPDATE_STATUS : "company/user/:id/update/status"
+    UPDATE_STATUS : "company/user/:id/update/status",
+    BY_ID : "company/user/:id"
   },
   JOBS : {
     CREATE : "company/job/create",

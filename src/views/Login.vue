@@ -88,7 +88,7 @@ export default {
           setTimeout(() => {
             ctx.isLogginIn = false;
             ctx.redirect();
-          }, 2000);
+          }, 500);
         })
         .catch(function(error) {
           localStorage.removeItem("email");
