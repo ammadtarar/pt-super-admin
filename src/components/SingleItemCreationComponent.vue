@@ -14,25 +14,39 @@
           </label>
         </div>
 
-        <div v-bind:key="field.key" v-for="field in fields">
-          <div
-            class="form-group"
-            v-if="!field.type && !(customEnabled && field.canAutoDetect)"
-          >
-            <label class="ionput-label ">{{ field.title }}</label>
-            <input
-              class="form-control"
-              :placeholder="field.placeholder || field.title"
-              v-model="field.value"
-            />
+        <div v-bind:key="field.key" v-for="field in fields" ::key="listKey">
+
+          <div v-if="field.showIf">
+            
+            <div class="form-group" v-if="toggleShowIf(field)">
+              <label class="ionput-label ">{{ field.title }}</label>
+              <input
+                class="form-control"
+                :placeholder="field.placeholder || field.title"
+                v-model="field.value"
+                :type="field.input_type"
+              />
+            </div>
+            
           </div>
+
+          <div v-else>
+            <div class="form-group" v-if="!field.type && !(customEnabled && field.canAutoDetect)">
+              <label class="ionput-label ">{{ field.title }}</label>
+              <input
+                class="form-control"
+                :placeholder="field.placeholder || field.title"
+                v-model="field.value"
+                :type="field.input_type"
+              />
+            </div>
           <div
             class="form-group"
             style="display : flex; flex-direction : column"
             v-if="field.type && field.type === 'single-option'"
           >
             <label class="ionput-label ">{{ field.title }}</label>
-            <select v-model="field.value" style="text-transform:capitalize;">
+            <select v-model="field.value" style="text-transform:capitalize;" @change="optionChanged">
               <option disabled value="null">Select one type</option>
               <option
                 v-for="item in field.options"
@@ -43,6 +57,10 @@
               </option>
             </select>
           </div>
+          </div>
+
+
+         
         </div>
       </form>
       <div class="actions">
@@ -74,9 +92,28 @@ export default {
       body: {},
       showCustomButton: false,
       customEnabled: false,
+      listKey : 0
     };
   },
   methods: {
+    toggleShowIf(field){
+      var index = 0;
+      this.fields.some((item , i)=>{
+        if(field.showIf.key === item.key){
+          index = i;
+          return;
+        }
+      });
+      let target = this.fields[index];
+      if(target.value === field.showIf.value){
+        return true
+      }else{
+        return false
+      }
+    },
+    optionChanged(e){
+      this.listKey += 1
+    },
     clear() {
       this.title = "";
       this.fields = [];

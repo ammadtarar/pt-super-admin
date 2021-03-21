@@ -261,10 +261,20 @@ export default {
             options: ["points", "cash"],
           },
           {
-            key: "referral_success_reward_value",
-            title: "Referral Reward Value",
-            placeholder: "Enter job reward points here",
+            showIf : {
+              key : "referral_success_reward_type",
+              value : "cash"
+            },
+            key: "cash_reward_currency",
+            title: "Currency",
+            placeholder: "Enter reward currency"
           },
+          {
+            key: "referral_success_reward_value",
+            title: "Referral Reward Value (only numbers)",
+            placeholder: "Enter job reward points here",
+            input_type : 'number'
+          }
         ],
         body: {
           companyId: company.id,
