@@ -1,6 +1,6 @@
 <template>
   <div class="modal-mask">
-    <div class="user-form-card">
+    <div class="user-form-card" style="overflow-y : scroll">
       <label class="title">Company Details</label>
 
       <div class="container" style="margin-left : -18px ; margin-bottom : 20px">

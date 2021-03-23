@@ -97,19 +97,23 @@ export default {
   },
   methods: {
     toggleShowIf(field){
-      var index = 0;
-      this.fields.some((item , i)=>{
-        if(field.showIf.key === item.key){
-          index = i;
-          return;
-        }
-      });
+      let index = this.getTargetIndex(field.showIf.key)
       let target = this.fields[index];
       if(target.value === field.showIf.value){
         return true
       }else{
         return false
       }
+    },
+    getTargetIndex(key){
+      var index = -1;
+      this.fields.some((item , i)=>{
+        if(key === item.key){
+          index =  i;
+          return
+        }
+      });
+      return index;
     },
     optionChanged(e){
       this.listKey += 1
@@ -127,7 +131,17 @@ export default {
 
       this.fields.forEach((element) => {
         if (!(element.canAutoDetect && this.customEnabled)) {
-          if (!element.value) {
+          if(element.showIf){
+            let index = this.getTargetIndex(element.showIf.key);
+            let target = this.fields[index];
+            if(target.value === element.showIf.value && !element.value){
+              this.$toast.warning(`${element.title} is missing`);
+              missingField = true;
+              return;
+            }else{
+              body[element.key] = element.value;
+            }
+          }else if (!element.value ) {
             this.$toast.warning(`${element.title} is missing`);
             missingField = true;
             return;
