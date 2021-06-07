@@ -34,9 +34,9 @@ HTTP.interceptors.response.use(
       localStorage.removeItem("id");
       localStorage.removeItem("name");
       location.reload();
-      alert('Session timeout')
+      alert("Session timeout");
     }
-    throw error
+    throw error;
   }
 );
 
@@ -54,30 +54,30 @@ const URLS = {
   USER: {
     CREATE: "company/user/create",
     LIST_ALL: "company/user/list/all",
-    UPDATE_STATUS : "company/user/:id/update/status",
-    BY_ID : "company/user/:id"
+    UPDATE_STATUS: "company/user/:id/update/status",
+    BY_ID: "company/user/:id",
   },
-  JOBS : {
-    CREATE : "company/job/create",
-    LIST_ALL : "company/job/list/all",
-    BY_ID : "company/job/:id" 
+  JOBS: {
+    CREATE: "company/job/create",
+    LIST_ALL: "company/job/list/all",
+    BY_ID: "company/job/:id",
   },
-  ARTICLE : {
-    CREATE : "company/article/create",
-    LIST_ALL : "company/article/list/all",
-    UPDATE_STATUS : "company/article/:id/update/status"
+  ARTICLE: {
+    CREATE: "company/article/create",
+    LIST_ALL: "company/article/list/all",
+    UPDATE_STATUS: "company/article/:id/update/status",
   },
-  QUIZ : {
-    CREATE : "company/quiz/create",
-    LIST_ALL : "company/quiz/list/all",
-    BY_ID : "company/quiz/:id",
-    ADD_QUESTIONS : "company/quiz/:id/add/questions",
-    QUETION_BY_ID : "company/quiz/question/:id"
+  QUIZ: {
+    CREATE: "company/quiz/create",
+    LIST_ALL: "company/quiz/list/all",
+    BY_ID: "company/quiz/:id",
+    ADD_QUESTIONS: "company/quiz/:id/add/questions",
+    QUETION_BY_ID: "company/quiz/question/:id",
   },
-  SETTINGS : {
-    DETAIL : "settings",
-    UPDATE : "settings/update"
-  }
+  SETTINGS: {
+    DETAIL: "settings",
+    UPDATE: "settings/update",
+  },
 };
 
 export { HTTP, URLS };
